@@ -11,7 +11,7 @@ import {
 
 import data from "./data.json"
 import { useState } from "react"
-import UsersInfo from "../dashboard/components/UsersInfo"
+import UsersInfo from "./(components)/admin-control/UsersInfo"
 
 export default function Page() {
 

@@ -30,9 +30,9 @@ export function NavMain({
 
   const adminRoutes= ["Users", "Projects", "Teams"]
   const leaderRoutes=["Role Assign", "Project Update"]
-  const coLeaderRoutes=["Role Assign", "Project Update"]
-  const memberRoutes=["Role Assign", "Project Update"]
-  const clientRoutes=["Role Assign", "Project Update"]
+  const coLeaderRoutes=[ "Project Update"]
+  const memberRoutes=["View Resource"]
+  const clientRoutes=["Payment"]
 
 
   useEffect(()=>{
