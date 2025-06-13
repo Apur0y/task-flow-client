@@ -23,7 +23,7 @@ export function NavMain({
 }) {
 
 
-  const [role,setRole] = useState("leader")
+  const [role,setRole] = useState("admin")
   const [routes,setRoutes] = useState<string[]>([])
 
 
@@ -38,11 +38,11 @@ export function NavMain({
     
     if(role==="admin"){
       setRoutes(adminRoutes)
-    }else if(role==="leader"){
+    }else if(role==="teamLeader"){
       setRoutes(leaderRoutes)
-    }else if(role==="co-leader"){
+    }else if(role==="teamColeader"){
       setRoutes(coLeaderRoutes)
-    }else if(role==="member"){
+    }else if(role==="teamMember"){
       setRoutes(memberRoutes)
 
     }else if(role==="client"){
@@ -62,7 +62,7 @@ export function NavMain({
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
             >
               <IconCirclePlusFilled />
-              <span>Quick Create</span>
+              <span>{role.toUpperCase()} Control</span>
             </SidebarMenuButton>
             <Button
               size="icon"
