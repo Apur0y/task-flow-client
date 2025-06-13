@@ -114,6 +114,7 @@
 
 @theme {
   --color-task-primary: #006666;
+  --color-task-primary-dark: #003333;
 }
 
 @layer base {
