@@ -82,8 +82,6 @@ export function NavMain({
                 <Link href={`/dashboard/${item}`}>
                       <button >{item}</button >
                 </Link>
-                
-          
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
