@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -78,8 +79,11 @@ export function NavMain({
           {routes.map((item) => (
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
+                <Link href={`/dashboard/${item}`}>
+                      <button >{item}</button >
+                </Link>
                 
-                <span>{item}</span>
+          
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

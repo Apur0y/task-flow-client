@@ -1,3 +1,4 @@
+'use client'
 import { AppSidebar } from "@/components/app-sidebar"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
@@ -9,8 +10,36 @@ import {
 } from "@/components/ui/sidebar"
 
 import data from "./data.json"
+import { useState } from "react"
+import UsersInfo from "../dashboard/components/UsersInfo"
 
 export default function Page() {
+
+    const [selectedRoute, setSelectedRoute] = useState("home")
+
+  // Render content based on selected route
+  const renderContent = () => {
+    switch (selectedRoute) {
+      case "home":
+        return (
+          <>
+            <SectionCards />
+            <div className="px-4 lg:px-6">
+              <ChartAreaInteractive />
+            </div>
+            <DataTable data={data} />
+          </>
+        )
+      case "componentA":
+        return <UsersInfo></UsersInfo>
+      // case "componentB":
+      //   return <ComponentB />
+      default:
+        return <div>Select a route</div>
+    }
+  }
+
+
   return (
     <SidebarProvider
       style={
@@ -21,7 +50,7 @@ export default function Page() {
       }
     >
       <AppSidebar variant="inset" />
-      <SidebarInset>
+      <SidebarInset >
         <SiteHeader />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
