@@ -1,4 +1,7 @@
+"use client";
 import { LoginForm } from "@/components/login-form";
+import Lottie from "lottie-react";
+import loginAnimation from "../../assets/lottieFile/login-animation.json";
 
 export default function LoginPage() {
   return (
@@ -19,11 +22,9 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="bg-task-primary relative hidden lg:block ">
-        <img
-          src="/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+        <div className="max-w-xl flex justify-center items-center h-screen mx-auto ">
+          <Lottie animationData={loginAnimation} loop={true} />
+        </div>
       </div>
     </div>
   );
