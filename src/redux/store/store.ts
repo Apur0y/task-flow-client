@@ -1,8 +1,14 @@
+import { authCreation } from "@/feature/auth/authCredential";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {
+      [authCreation.reducerPath]: authCreation.reducer,
+    },
+
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(authCreation.middleware),
   });
 };
 
