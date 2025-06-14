@@ -80,7 +80,7 @@ export function NavMain({
           {routes.map((item) => (
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
-                <Link className={`${active===item? "bg-teal-500 w-full py-3 px-2 rounded-lg":""} w-full py-3 px-2 rounded-lg`} href={`/dashboard/${item}`}>
+                <Link className={`${active===item? "bg-task w-full py-3 px-2 rounded-lg":""} w-full py-3 px-2 rounded-lg`} href={`/dashboard/${item}`}>
                       <button onClick={()=>setActive(item)} >{item}</button >
                 </Link>
               </SidebarMenuButton>
