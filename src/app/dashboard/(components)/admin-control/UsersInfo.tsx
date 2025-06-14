@@ -1,7 +1,12 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import UserTable from './(components)/UserTable'
+// import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice'
+// import { ClockFading } from 'lucide-react'
 
 export default function UsersInfo() {
+
+
   return (
     <div>
         
@@ -9,6 +14,7 @@ export default function UsersInfo() {
           <h1 className='text-xl font-semibold'>User Informations</h1>
           <p>Dashboard - Users</p>
         </header>
+     
         <UserTable></UserTable>
     </div>
   )
