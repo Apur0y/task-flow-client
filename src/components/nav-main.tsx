@@ -24,34 +24,34 @@ export function NavMain({
 }) {
 
 
-  const [role,setRole] = useState("admin")
-  const [routes,setRoutes] = useState<string[]>([])
-  const [active,setActive]=useState("")
+  const [role, setRole] = useState("admin")
+  const [routes, setRoutes] = useState<string[]>([])
+  const [active, setActive] = useState("")
 
 
-  const adminRoutes= ["Users", "Projects", "Teams"]
-  const leaderRoutes=["Role Assign", "Project Update"]
-  const coLeaderRoutes=[ "Project Update"]
-  const memberRoutes=["View Resource"]
-  const clientRoutes=["Payment"]
+  const adminRoutes = ["Users", "Projects", "Teams"]
+  const leaderRoutes = ["Role Assign", "Project Update"]
+  const coLeaderRoutes = ["Project Update"]
+  const memberRoutes = ["View Resource"]
+  const clientRoutes = ["Payment"]
 
 
-  useEffect(()=>{
-    
-    if(role==="admin"){
+  useEffect(() => {
+
+    if (role === "admin") {
       setRoutes(adminRoutes)
-    }else if(role==="teamLeader"){
+    } else if (role === "teamLeader") {
       setRoutes(leaderRoutes)
-    }else if(role==="teamColeader"){
+    } else if (role === "teamColeader") {
       setRoutes(coLeaderRoutes)
-    }else if(role==="teamMember"){
+    } else if (role === "teamMember") {
       setRoutes(memberRoutes)
 
-    }else if(role==="client"){
+    } else if (role === "client") {
       setRoutes(clientRoutes)
     }
 
-  },[role])
+  }, [role])
 
 
   return (
@@ -80,9 +80,16 @@ export function NavMain({
           {routes.map((item) => (
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
-                <Link className={`${active===item? "bg-task w-full py-3 px-2 rounded-lg":""} w-full py-3 px-2 rounded-lg`} href={`/dashboard/${item}`}>
-                      <button onClick={()=>setActive(item)} >{item}</button >
+                <Link
+                  className={`w-full ${active === item ? "bg-white rounded-lg" : ""}`}
+                  href={`/dashboard/${item}`}
+                  onClick={() => setActive(item)}
+                >
+                  <div className="w-full py-3 px-2 rounded-lg  text-left">
+                    {item}
+                  </div>
                 </Link>
+
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
