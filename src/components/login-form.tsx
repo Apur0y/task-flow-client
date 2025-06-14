@@ -20,7 +20,6 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [passwordShow, setPasswordShow] = useState(false);
-  const [user, setUser] = useState({});
 
   const {
     register,
@@ -29,7 +28,7 @@ export function LoginForm({
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setUser(data);
+    console.log(data);
     console.log(data);
   };
 
