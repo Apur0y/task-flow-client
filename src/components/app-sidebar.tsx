@@ -152,7 +152,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="bg-task-primary text-white" collapsible="offcanvas" {...props}>
+    <Sidebar className="bg-task-primary " collapsible="offcanvas" {...props}>
       <SidebarHeader className="bg-task-primary">
         <SidebarMenu className="bg-task-primary">
           <SidebarMenuItem className="bg-task-primary">
