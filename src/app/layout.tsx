@@ -3,14 +3,14 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 
 import StoreProvider from "./StoreProvider";
-import toast, { Toaster } from "react-hot-toast";
+
+import { Toaster } from "react-hot-toast";
 
 
 const montserrat = Montserrat({
   variable: "--font-montserrat", // ✅ Correct and clear
   subsets: ["latin"],
 });
-
 
 export const metadata: Metadata = {
   title: "Task Flow",
@@ -24,11 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+
       <body  className={`${montserrat.variable}  antialiased`}>
-         <Toaster />
+      
 
         <StoreProvider>{children}</StoreProvider>
-
+        <Toaster />
       </body>
     </html>
   );
