@@ -9,7 +9,16 @@ export const authCreation = createBaseApi.injectEndpoints({
         body: user,
       }),
     }),
+
+    getAllUser: build.query({
+      query: () => ({
+        url: "/api/user",
+        method: "GET",
+      })
+
+    }),
+
   }),
 });
 
-export const { useUserCreationMutation } = authCreation;
+export const { useUserCreationMutation, useGetAllUserQuery } = authCreation;
