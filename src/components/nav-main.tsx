@@ -24,7 +24,7 @@ export function NavMain({
 }) {
 
 
-  const [role,setRole] = useState("teamLeader")
+  const [role,setRole] = useState("admin")
   const [routes,setRoutes] = useState<string[]>([])
   const [active,setActive]=useState("")
 
@@ -55,7 +55,7 @@ export function NavMain({
 
 
   return (
-    <SidebarGroup className="border-r">
+    <SidebarGroup className="bg-task-primary">
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
