@@ -42,7 +42,7 @@ export default function Page() {
 
   return (
 <div>
-  Koi vauii  ai tae 
+  It is working
 </div>
   )
 }

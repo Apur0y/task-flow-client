@@ -24,8 +24,9 @@ export function NavMain({
 }) {
 
 
-  const [role,setRole] = useState("admin")
+  const [role,setRole] = useState("teamLeader")
   const [routes,setRoutes] = useState<string[]>([])
+  const [active,setActive]=useState("")
 
 
   const adminRoutes= ["Users", "Projects", "Teams"]
@@ -54,7 +55,7 @@ export function NavMain({
 
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="border-r">
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
@@ -79,8 +80,8 @@ export function NavMain({
           {routes.map((item) => (
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
-                <Link href={`/dashboard/${item}`}>
-                      <button >{item}</button >
+                <Link className={`${active===item? "bg-teal-500 w-full py-3 px-2 rounded-lg":""} w-full py-3 px-2 rounded-lg`} href={`/dashboard/${item}`}>
+                      <button onClick={()=>setActive(item)} >{item}</button >
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
