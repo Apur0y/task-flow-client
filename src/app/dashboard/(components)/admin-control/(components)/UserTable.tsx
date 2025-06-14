@@ -1,8 +1,10 @@
 'use client';
 
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
+import { useCreateUserMutation } from '@/feature/users/userApi';
 import { Search } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 
 interface User {
@@ -34,6 +36,32 @@ const UserTable: FC = () => {
     ]);
 
     const { data } = useGetAllUserQuery({});
+    const [createUser] = useCreateUserMutation()
+
+      const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<User>();
+
+ const onSubmit = async(data: User) => {
+    console.log('Form Submitted:', data);
+
+    const responce = await createUser(data);
+
+    if(responce.success){
+      console.log(responce)
+    }else{
+      console.log(responce)
+    }
+
+
+    reset();
+    // You can close modal here manually if needed
+    (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
+  };
+    
 
     useEffect(() => {
         if (data?.data) {
@@ -49,21 +77,21 @@ const UserTable: FC = () => {
 
             <section className='flex justify-between border-b mb-5 pb-4'>
                 <div >
-                   
+
                     <div className="relative w-full max-w-sm ml-2">
-  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-    <Search size={18} />
-  </span>
-  <input
-    type="text"
-    className="pl-10 py-2 md:px-15 border rounded-lg w-full"
-    placeholder="Search by email"
-  />
-</div>
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <Search size={18} />
+                        </span>
+                        <input
+                            type="text"
+                            className="pl-10 py-2 md:px-15 border rounded-lg w-full"
+                            placeholder="Search by email"
+                        />
+                    </div>
                 </div>
 
                 <div>
-                    <button className='bg-task-primary py-3 px-7 text-white'>+ Add New User</button>
+                    <button onClick={() => (document.getElementById('my_modal_2') as HTMLDialogElement | null)?.showModal()} className='bg-task-primary py-3 px-7 text-white'>+ Add New User</button>
                 </div>
 
             </section>
@@ -121,6 +149,110 @@ const UserTable: FC = () => {
                     </tbody>
                 </table>
             </div>
+
+
+            {/* Open the modal using document.getElementById('ID').showModal() method */}
+
+             <dialog id="my_modal_2" className="modal bg-white">
+      <div className="modal-box w-full max-w-2xl bg-white   ">
+        <h3 className="font-bold text-lg mb-4">Create New User</h3>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium">Name</label>
+            <input
+              type="text"
+              {...register('userName', { required: 'Name is required' })}
+              className="input input-bordered w-full"
+            />
+            {errors.userName && <p className="text-red-500 text-xs">{errors.userName.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              {...register('userEmail', { required: 'Email is required' })}
+              className="input input-bordered w-full"
+            />
+            {errors.userEmail && <p className="text-red-500 text-xs">{errors.userEmail.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Role</label>
+            <input
+              type="text"
+              {...register('userRole', { required: 'Role is required' })}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Password</label>
+            <input
+              type="password"
+              {...register('userPassword', { required: 'Password is required' })}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Employee ID</label>
+            <input
+              type="text"
+              {...register('userEmployeeId')}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Address</label>
+            <input
+              type="text"
+              {...register('address')}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Joining Date</label>
+            <input
+              type="text"
+              {...register('joinDate')}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Phone</label>
+            <input
+              type="text"
+              {...register('phone')}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Photo URL</label>
+            <input
+              type="url"
+              {...register('photo')}
+              className="input input-bordered w-full"
+            />
+          </div>
+
+          <div className="col-span-full mt-4">
+            <button type="submit" className="btn btn-primary w-full">
+              Create User
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <form method="dialog" className="modal-backdrop">
+        <button>Close</button>
+      </form>
+    </dialog>
         </div>
     );
 };
