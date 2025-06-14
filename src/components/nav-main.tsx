@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -23,26 +24,27 @@ export function NavMain({
 }) {
 
 
-  const [role,setRole] = useState("leader")
+  const [role,setRole] = useState("admin")
   const [routes,setRoutes] = useState<string[]>([])
+  const [active,setActive]=useState("")
 
 
   const adminRoutes= ["Users", "Projects", "Teams"]
   const leaderRoutes=["Role Assign", "Project Update"]
-  const coLeaderRoutes=["Role Assign", "Project Update"]
-  const memberRoutes=["Role Assign", "Project Update"]
-  const clientRoutes=["Role Assign", "Project Update"]
+  const coLeaderRoutes=[ "Project Update"]
+  const memberRoutes=["View Resource"]
+  const clientRoutes=["Payment"]
 
 
   useEffect(()=>{
     
     if(role==="admin"){
       setRoutes(adminRoutes)
-    }else if(role==="leader"){
+    }else if(role==="teamLeader"){
       setRoutes(leaderRoutes)
-    }else if(role==="co-leader"){
+    }else if(role==="teamColeader"){
       setRoutes(coLeaderRoutes)
-    }else if(role==="member"){
+    }else if(role==="teamMember"){
       setRoutes(memberRoutes)
 
     }else if(role==="client"){
@@ -53,7 +55,7 @@ export function NavMain({
 
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="bg-task-primary">
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
@@ -62,7 +64,7 @@ export function NavMain({
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
             >
               <IconCirclePlusFilled />
-              <span>Quick Create</span>
+              <span>{role.toUpperCase()} Control</span>
             </SidebarMenuButton>
             <Button
               size="icon"
@@ -78,8 +80,9 @@ export function NavMain({
           {routes.map((item) => (
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
-                
-                <span>{item}</span>
+                <Link className={`${active===item? "bg-task w-full py-3 px-2 rounded-lg":""} w-full py-3 px-2 rounded-lg`} href={`/dashboard/${item}`}>
+                      <button onClick={()=>setActive(item)} >{item}</button >
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
