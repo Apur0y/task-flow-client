@@ -112,6 +112,11 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@theme {
+  --color-task-primary: #006666;
+  --color-task-primary-dark: #003333;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
