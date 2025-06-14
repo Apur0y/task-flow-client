@@ -1,82 +1,201 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+import { useCreateProjectMutation } from "@/feature/projectCreate/projectCreateSlice";
+import { IProject } from "@/types/project";
+import toast from "react-hot-toast";
+
+const formSchema = z.object({
+  projectName: z.string().min(1, "Project Name is required"),
+  projectId: z.string().min(1, "Project ID is required"),
+  clientId: z.string().min(1, "Client ID is required"),
+  station: z.string().min(1, "Source Station is required"),
+  projectValue: z.number().min(0, "Project value amount is required"),
+  deadline: z
+    .string()
+    .min(1, "Deadline is required")
+    .refine((val) => !isNaN(Date.parse(val)), "Invalid date format"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function ProjectCreate() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      projectName: "",
+      projectId: "",
+      clientId: "",
+      station: "",
+      projectValue: undefined,
+      deadline: "",
+    },
+  });
+
+  const [createProject, { isLoading, isError, error }] =
+    useCreateProjectMutation();
+
+  const onSubmit = async (data: FormData) => {
+    const projectData: Omit<
+      IProject,
+      "_id" | "notes" | "createdAt" | "updatedAt"
+    > = {
+      ...data,
+      projectValue: data.projectValue || 0,
+      cancellationNote: null,
+      teamName: null,
+      frontendRoleAssignedTo: null,
+      backendRoleAssignedTo: null,
+      uiRoleAssignedTo: null,
+      lastUpdate: null,
+      lastMeeting: null,
+      projectStatus: "new",
+      estimatedDelivery: null,
+      rating: null,
+      clientStatus: null,
+      figmaLink: null,
+      backendLink: null,
+      liveLink: null,
+      deliveryDate: null,
+      requirementDoc: null,
+      notes: [],
+    };
+
+    try {
+      await createProject(projectData).unwrap();
+      toast.success("Project created successfully!");
+      reset();
+    } catch (err) {
+      toast.error((err as any)?.data?.message || "Failed to create project");
+    }
+  };
+
   return (
     <div>
-      <h1 className=" text-xl lg:text-3xl font-semibold ml-3 lg:ml-8 mt-5   ">
+      <h1 className="text-xl lg:text-3xl font-semibold ml-3 lg:ml-8 mt-5">
         Project Create
       </h1>
-      <div className="bg-white shadow-md px-6 mx-3 lg:mx-8 rounded-xl py-4 lg:py-6 mt-4   ">
-        <div className=" w-full    items-center gap-3">
-          <Label htmlFor="email">Project Name</Label>
+      <div className="bg-white shadow-md px-6 mx-3 lg:mx-8 rounded-xl py-4 lg:py-6 mt-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full items-center gap-3"
+        >
+          <Label htmlFor="projectName">Project Name</Label>
           <Input
             className="mt-2 p-5 mb-4 lg:mb-6"
             type="text"
-            id="name"
+            id="projectName"
             placeholder="Project Name"
+            {...register("projectName")}
           />
-          <Label htmlFor="email">Project ID</Label>
+          {errors.projectName && (
+            <p className="text-red-500 text-sm">{errors.projectName.message}</p>
+          )}
+          <Label htmlFor="projectId">Project ID</Label>
           <Input
-            className="mt-2 p-5 mb-4 lg:mb-6 "
+            className="mt-2 p-5 mb-4 lg:mb-6"
             type="text"
-            id="text"
+            id="projectId"
             placeholder="Enter your Project Id"
+            {...register("projectId")}
           />
-        </div>
-        <div className="lg:flex justify-between   p space-x-12 w-full">
-          <div className=" w-full lg:w-1/2">
-            <Label htmlFor="email">Client ID</Label>
-            <Input
-              className="mt-2 p-5   mb-4 lg:mb-6"
-              type="text"
-              id="text"
-              placeholder="Enter Client ID "
-            />
+          {errors.projectId && (
+            <p className="text-red-500 text-sm">{errors.projectId.message}</p>
+          )}
+          <div className="lg:flex justify-between space-x-12 w-full">
+            <div className="w-full lg:w-1/2">
+              <Label htmlFor="clientId">Client ID</Label>
+              <Input
+                className="mt-2 p-5 mb-4 lg:mb-6"
+                type="text"
+                id="clientId"
+                placeholder="Enter Client ID"
+                {...register("clientId")}
+              />
+              {errors.clientId && (
+                <p className="text-red-500 text-sm">
+                  {errors.clientId.message}
+                </p>
+              )}
+            </div>
+            <div className="w-full lg:w-1/2">
+              <Label htmlFor="station">Source Station</Label>
+              <Input
+                className="mt-2 p-5 mb-4 lg:mb-6"
+                type="text"
+                id="station"
+                placeholder="Enter Source Station"
+                {...register("station")}
+              />
+              {errors.station && (
+                <p className="text-red-500 text-sm">{errors.station.message}</p>
+              )}
+            </div>
           </div>
-          <div className="w-full lg:w-1/2">
-            <Label htmlFor="email">Source Station </Label>
-            <Input
-              className="mt-2 p-5   mb-4 lg:mb-6"
-              type="text"
-              id="text"
-              placeholder="Enter Source Station "
-            />
+          <div className="lg:flex justify-between space-x-12 w-full">
+            <div className="w-full lg:w-1/2">
+              <Label htmlFor="deadline">Project Deadline</Label>
+              <Input
+                className="mt-2 p-5 mb-4 lg:mb-6"
+                type="date"
+                id="deadline"
+                {...register("deadline")}
+              />
+              {errors.deadline && (
+                <p className="text-red-500 text-sm">
+                  {errors.deadline.message}
+                </p>
+              )}
+            </div>
+            <div className="w-full lg:w-1/2">
+              <Label htmlFor="projectValue">Project Value</Label>
+              <Input
+                className="mt-2 p-5 mb-4 lg:mb-6"
+                type="number"
+                id="projectValue"
+                placeholder="Enter Project Value"
+                {...register("projectValue", { valueAsNumber: true })}
+              />
+              {errors.projectValue && (
+                <p className="text-red-500 text-sm">
+                  {errors.projectValue.message}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="lg:flex justify-between   space-x-12 w-full">
-          <div className=" w-full lg:w-1/2">
-            <Label htmlFor="email">Project Deadline</Label>
-            <Input
-              className="mt-2 p-5 mb-4 lg:mb-6"
-              type="date"
-              id="date"
-              placeholder="Enter Client Deadline "
-            />
+          <div className="flex justify-end space-x-4 lg:space-x-8 w-full">
+            <Button
+              className="px-4 lg:px-10 py-2 lg:py-5 bg-green-500 text-white hover:bg-green-600"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? "Adding..." : "Add Project"}
+            </Button>
+            <Button
+              className="px-4 lg:px-10 py-2 lg:py-5"
+              variant="destructive"
+              onClick={() => reset()}
+            >
+              Cancel
+            </Button>
           </div>
-
-          <div className="w-full lg:w-1/2">
-            <Label htmlFor="email">Project Value </Label>
-            <Input
-              className="mt-2 p-5  mb-4 lg:mb-6"
-              type="number"
-              id="number"
-              placeholder="Enter Project Value"
-            />
-          </div>
-        </div>
-        <div className="flex justify-end space-x-4  lg:space-x-8 w-full">
-          <Button className=" px-4 lg:px-10 py-2 lg:py-5  bg-green-500 text-white hover:bg-green-600">
-            Add Project
-          </Button>
-          <Button
-            className="px-4 lg:px-10 py-2 lg:py-5"
-            variant={"destructive"}
-          >
-            Cancel
-          </Button>
-        </div>
+          {isError && (
+            <p className="text-red-500 mt-2">
+              Error:{" "}
+              {(error as any)?.data?.message || "Failed to create project"}
+            </p>
+          )}
+        </form>
       </div>
     </div>
   );
