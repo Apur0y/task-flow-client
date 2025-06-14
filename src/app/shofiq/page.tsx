@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function InputWithLabel() {
+export default function ProjectCreate() {
   return (
     <div>
       <h1 className=" text-xl lg:text-3xl font-semibold ml-3 lg:ml-8 mt-5   ">
