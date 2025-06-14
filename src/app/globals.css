@@ -115,6 +115,9 @@
 @theme {
   --color-task-primary: #006666;
   --color-task-primary-dark: #003333;
+
+  --color-task-body-gray: #051a1a;
+
 }
 
 @layer base {
@@ -122,6 +125,8 @@
     @apply border-border outline-ring/50;
   }
   body {
+      font-family: var(--font-montserrat);
     @apply bg-background text-foreground;
+    background-color: rgb(243, 243, 243);
   }
 }

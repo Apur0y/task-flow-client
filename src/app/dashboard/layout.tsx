@@ -1,6 +1,7 @@
 import { AppSidebar } from '@/components/app-sidebar';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
 import { DataTable } from '@/components/data-table';
+import Navbar from '@/components/NavbarDashboard';
 import { SectionCards } from '@/components/section-cards';
 import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -37,9 +38,10 @@ export default function layout({
           </div>
         </div>
       </SidebarInset> */}
-        <div className="flex flex-1 flex-col">
+        <div className="flex flex-1 flex-col bg-gray-300">
           <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            <div className="flex flex-col gap-4 md:gap-6">
+       <Navbar></Navbar>
                          {children}
             </div>
           </div>

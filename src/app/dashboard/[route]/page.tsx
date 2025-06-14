@@ -16,7 +16,7 @@ export default function page({ params }: PageProps) {
  
     const  route  = decodeURIComponent(params.route);
     useEffect(()=>{
-         setRole("teamLeader")
+         setRole("admin")
     },[])
 
 console.log(route,"My route is")
