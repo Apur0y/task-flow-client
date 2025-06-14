@@ -7,6 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useState } from "react";
+import { useUserCreationMutation } from "@/feature/auth/authCredential";
 
 type Inputs = {
   email: string;
@@ -19,16 +20,19 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [passwordShow, setPasswordShow] = useState(false);
+  const [user, setUser] = useState("");
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+    setUser(data);
   };
+  console.log(user);
+  const [authUser, result] = useUserCreationMutation();
+  console.log(result);
 
   return (
     <form
