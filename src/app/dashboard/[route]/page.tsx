@@ -19,8 +19,6 @@ export default function page({ params }: PageProps) {
          setRole("admin")
     },[])
 
-console.log(route,"My route is")
-
  let adminRoutes = route === "Users" && role ==="admin"
    ? <div><UsersInfo></UsersInfo></div>
    : route === "Projects"  && role ==="admin"

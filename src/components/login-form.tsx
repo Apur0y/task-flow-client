@@ -8,10 +8,12 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import { useUserCreationMutation } from "@/feature/auth/authCredentialSlice";
+import toast from "react-hot-toast";
+import { PulseLoader } from "react-spinners";
 
 type Inputs = {
-  email: string;
-  password: string | number;
+  userEmail: string;
+  userPassword: string | number;
   exampleRequired: string;
 };
 
@@ -20,17 +22,30 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [passwordShow, setPasswordShow] = useState(false);
-  const [user, setUser] = useState({});
 
   const {
     register,
+    reset,
+
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setUser(data);
-    console.log(data);
+  const [login, { isLoading }] = useUserCreationMutation();
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      let res = await login(data);
+      console.log(res?.error?.data?.message);
+      if (res.data?.success) {
+        toast.success("Login successful!");
+      } else if (res?.error?.data?.message) {
+        toast.error(res?.error?.data?.message);
+      }
+      reset();
+    } catch (error) {
+      toast.error("Login failed. Please try again.");
+    }
   };
 
   return (
@@ -51,7 +66,7 @@ export function LoginForm({
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input
-            {...register("email", { required: true })}
+            {...register("userEmail", { required: true })}
             className="py-5 rounded-sm"
             id="email"
             type="email"
@@ -64,11 +79,10 @@ export function LoginForm({
           </div>
           <div className=" relative ">
             <Input
-              {...register("password", { required: true })}
+              {...register("userPassword")}
               className="py-5 rounded-sm w-full"
               id="password"
               type={passwordShow ? "text" : "password"}
-              name="password"
             />
             <div className=" absolute top-3 right-5 ">
               {passwordShow ? (
@@ -103,7 +117,13 @@ export function LoginForm({
           type="submit"
           className="w-full  bg-task-primary py-5 rounded-sm cursor-pointer hover:bg-task-primary-dark"
         >
-          Login
+          {isLoading ? (
+            <div className="flex items-center justify-center ">
+              <PulseLoader color={"#ffffff"} size={"12"} />
+            </div>
+          ) : (
+            "Login"
+          )}
         </Button>
       </div>
       <div className="text-center text-sm">
