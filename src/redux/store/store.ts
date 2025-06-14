@@ -1,14 +1,14 @@
-import { authCreation } from "@/feature/auth/authCredential";
 import { configureStore } from "@reduxjs/toolkit";
+import { createBaseApi } from "../api/basuUrlslice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      [authCreation.reducerPath]: authCreation.reducer,
+      [createBaseApi.reducerPath]: createBaseApi.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(authCreation.middleware),
+      getDefaultMiddleware().concat(createBaseApi.middleware),
   });
 };
 
