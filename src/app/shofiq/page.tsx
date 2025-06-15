@@ -5,10 +5,9 @@ import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-
+import toast from "react-hot-toast";
 import { useCreateProjectMutation } from "@/feature/projectCreate/projectCreateSlice";
 import { IProject } from "@/types/project";
-import toast from "react-hot-toast";
 
 const formSchema = z.object({
   projectName: z.string().min(1, "Project Name is required"),
@@ -20,6 +19,7 @@ const formSchema = z.object({
     .string()
     .min(1, "Deadline is required")
     .refine((val) => !isNaN(Date.parse(val)), "Invalid date format"),
+  projectDescription: z.string().optional(), // New optional field
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -39,6 +39,7 @@ export default function ProjectCreate() {
       station: "",
       projectValue: undefined,
       deadline: "",
+      projectDescription: "", // Default value for new field
     },
   });
 
@@ -46,6 +47,7 @@ export default function ProjectCreate() {
     useCreateProjectMutation();
 
   const onSubmit = async (data: FormData) => {
+    console.log("Form Data:", data);
     const projectData: Omit<
       IProject,
       "_id" | "notes" | "createdAt" | "updatedAt"
@@ -72,7 +74,8 @@ export default function ProjectCreate() {
     };
 
     try {
-      await createProject(projectData).unwrap();
+      const result = await createProject(projectData).unwrap();
+      console.log("Project created:", result);
       toast.success("Project created successfully!");
       reset();
     } catch (err) {
@@ -172,6 +175,20 @@ export default function ProjectCreate() {
                 </p>
               )}
             </div>
+          </div>
+          <div className="w-full">
+            <Label htmlFor="projectDescription">Project Description</Label>
+            <textarea
+              className="mt-2 p-5 h-28 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              id="projectDescription"
+              placeholder="Enter Project Description"
+              {...register("projectDescription")}
+            />
+            {errors.projectDescription && (
+              <p className="text-red-500 text-sm">
+                {errors.projectDescription.message}
+              </p>
+            )}
           </div>
           <div className="flex justify-end space-x-4 lg:space-x-8 w-full">
             <Button
