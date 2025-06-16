@@ -11,6 +11,10 @@ import { useUserCreationMutation } from "@/feature/auth/authCredentialSlice";
 import toast from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
 
+type Errors = {
+  error: string;
+}
+
 type Inputs = {
   userEmail: string;
   userPassword: string | number;
@@ -35,8 +39,7 @@ export function LoginForm({
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      let res = await login(data);
-      console.log(res?.error?.data?.message);
+      const res = await login(data);
       if (res.data?.success) {
         toast.success("Login successful!");
       } else if (res?.error?.data?.message) {
