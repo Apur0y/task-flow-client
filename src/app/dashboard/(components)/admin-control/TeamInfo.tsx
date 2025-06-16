@@ -1,5 +1,6 @@
 import React from 'react'
 import TeamCard from './(components)/TeamSection'
+import TeamSection from './(components)/TeamSection'
 
 export default function TeamInfo() {
   return (
@@ -9,7 +10,7 @@ export default function TeamInfo() {
           <p>Dashboard - Teams</p>
         </header>
 
-        <TeamCard></TeamCard>
+        <TeamSection></TeamSection>
      
     </div>
   )

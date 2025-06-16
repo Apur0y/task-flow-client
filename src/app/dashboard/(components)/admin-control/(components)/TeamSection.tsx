@@ -1,7 +1,8 @@
 import { Search } from 'lucide-react'
 import React, { useState } from 'react'
+import TeamCard from './TeamCard';
 
-export default function TeamCard() {
+export default function TeamSection() {
 
   const [users, setUsers] = useState<[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<[]>([]);
@@ -53,7 +54,10 @@ export default function TeamCard() {
 
       </section>
 
-      <div>
+      <div className='flex flex-wrap gap-3'>
+        {
+          ["2","3","5","6"].map(p=><TeamCard></TeamCard>)
+        }
         
 
       </div>
