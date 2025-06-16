@@ -1,86 +1,58 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import toast from "react-hot-toast";
 import { useCreateProjectMutation } from "@/feature/projectCreate/projectCreateSlice";
-import { IProject } from "@/types/project";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-const formSchema = z.object({
-  projectName: z.string().min(1, "Project Name is required"),
-  projectId: z.string().min(1, "Project ID is required"),
-  clientId: z.string().min(1, "Client ID is required"),
-  station: z.string().min(1, "Source Station is required"),
-  projectValue: z.number().min(0, "Project value amount is required"),
-  deadline: z
-    .string()
-    .min(1, "Deadline is required")
-    .refine((val) => !isNaN(Date.parse(val)), "Invalid date format"),
-  projectDescription: z.string().optional(), // New optional field
-});
+type ProjectFormData = {
+  projectId: string;
+  projectName: string;
+  station: string;
+  clientId: string;
+  deadline: string;
+  projectValue: number;
+  projectDescription: string;
+  projectStatus: string;
+  estimatedDelivery: string;
+};
 
-type FormData = z.infer<typeof formSchema>;
-
-export default function ProjectCreate() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      projectName: "",
-      projectId: "",
-      clientId: "",
-      station: "",
-      projectValue: undefined,
-      deadline: "",
-      projectDescription: "", // Default value for new field
-    },
-  });
-
+export default function ProjectListPage() {
   const [createProject, { isLoading, isError, error }] =
     useCreateProjectMutation();
 
-  const onSubmit = async (data: FormData) => {
-    console.log("Form Data:", data);
-    const projectData: Omit<
-      IProject,
-      "_id" | "notes" | "createdAt" | "updatedAt"
-    > = {
-      ...data,
-      projectValue: data.projectValue || 0,
-      cancellationNote: null,
-      teamName: null,
-      frontendRoleAssignedTo: null,
-      backendRoleAssignedTo: null,
-      uiRoleAssignedTo: null,
-      lastUpdate: null,
-      lastMeeting: null,
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProjectFormData>({
+    defaultValues: {
+      projectId: "",
+      projectName: "",
+      station: "",
+      clientId: "",
+      deadline: "",
+      projectValue: 0,
+      projectDescription: "",
       projectStatus: "new",
-      estimatedDelivery: null,
-      rating: null,
-      clientStatus: null,
-      figmaLink: null,
-      backendLink: null,
-      liveLink: null,
-      deliveryDate: null,
-      requirementDoc: null,
-      notes: [],
-    };
+      estimatedDelivery: "thisWeek",
+    },
+  });
 
+  const onSubmit = async (data: ProjectFormData) => {
     try {
-      const result = await createProject(projectData).unwrap();
-      console.log("Project created:", result);
-      toast.success("Project created successfully!");
-      reset();
+      await createProject(data).unwrap();
+      console.log("Project created successfully");
+      reset(); // Reset form after successful submission
     } catch (err) {
-      toast.error((err as any)?.data?.message || "Failed to create project");
+      console.error("Failed to create project:", err);
     }
+  };
+
+  // Reset form fields and errors
+  const handleReset = () => {
+    reset(); // Use react-hook-form's reset method
   };
 
   return (
@@ -98,8 +70,10 @@ export default function ProjectCreate() {
             className="mt-2 p-5 mb-4 lg:mb-6"
             type="text"
             id="projectName"
-            placeholder="Project Name"
-            {...register("projectName")}
+            placeholder="e.g., Perry Rodgers"
+            {...register("projectName", {
+              required: "Project Name is required",
+            })}
           />
           {errors.projectName && (
             <p className="text-red-500 text-sm">{errors.projectName.message}</p>
@@ -109,8 +83,8 @@ export default function ProjectCreate() {
             className="mt-2 p-5 mb-4 lg:mb-6"
             type="text"
             id="projectId"
-            placeholder="Enter your Project Id"
-            {...register("projectId")}
+            placeholder="e.g., PRJ124"
+            {...register("projectId", { required: "Project ID is required" })}
           />
           {errors.projectId && (
             <p className="text-red-500 text-sm">{errors.projectId.message}</p>
@@ -122,8 +96,8 @@ export default function ProjectCreate() {
                 className="mt-2 p-5 mb-4 lg:mb-6"
                 type="text"
                 id="clientId"
-                placeholder="Enter Client ID"
-                {...register("clientId")}
+                placeholder="e.g., CLI124"
+                {...register("clientId", { required: "Client ID is required" })}
               />
               {errors.clientId && (
                 <p className="text-red-500 text-sm">
@@ -137,8 +111,10 @@ export default function ProjectCreate() {
                 className="mt-2 p-5 mb-4 lg:mb-6"
                 type="text"
                 id="station"
-                placeholder="Enter Source Station"
-                {...register("station")}
+                placeholder="e.g., Rem in odio deserunt"
+                {...register("station", {
+                  required: "Source Station is required",
+                })}
               />
               {errors.station && (
                 <p className="text-red-500 text-sm">{errors.station.message}</p>
@@ -150,9 +126,9 @@ export default function ProjectCreate() {
               <Label htmlFor="deadline">Project Deadline</Label>
               <Input
                 className="mt-2 p-5 mb-4 lg:mb-6"
-                type="date"
+                type="datetime-local"
                 id="deadline"
-                {...register("deadline")}
+                {...register("deadline", { required: "Deadline is required" })}
               />
               {errors.deadline && (
                 <p className="text-red-500 text-sm">
@@ -166,8 +142,12 @@ export default function ProjectCreate() {
                 className="mt-2 p-5 mb-4 lg:mb-6"
                 type="number"
                 id="projectValue"
-                placeholder="Enter Project Value"
-                {...register("projectValue", { valueAsNumber: true })}
+                placeholder="e.g., 200000"
+                {...register("projectValue", {
+                  required: "Project Value is required",
+                  valueAsNumber: true,
+                  min: { value: 0, message: "Value must be positive" },
+                })}
               />
               {errors.projectValue && (
                 <p className="text-red-500 text-sm">
@@ -181,12 +161,54 @@ export default function ProjectCreate() {
             <textarea
               className="mt-2 p-5 h-28 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               id="projectDescription"
-              placeholder="Enter Project Description"
-              {...register("projectDescription")}
+              placeholder="e.g., Let me know if you want it spaced out (40-50 chars)"
+              {...register("projectDescription", {
+                required: "Description is required",
+              })}
             />
             {errors.projectDescription && (
               <p className="text-red-500 text-sm">
                 {errors.projectDescription.message}
+              </p>
+            )}
+          </div>
+          <div className="w-full">
+            <Label htmlFor="projectStatus">Project Status</Label>
+            <select
+              className="mt-2 p-5 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              id="projectStatus"
+              {...register("projectStatus", { required: "Status is required" })}
+            >
+              <option value="new">New</option>
+              <option value="ui/ux">UI/UX</option>
+              <option value="wip">WIP</option>
+              <option value="qa">QA</option>
+              <option value="delivered">Delivered</option>
+              <option value="revision">Revision</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            {errors.projectStatus && (
+              <p className="text-red-500 text-sm">
+                {errors.projectStatus.message}
+              </p>
+            )}
+          </div>
+          <div className="w-full">
+            <Label htmlFor="estimatedDelivery">Estimated Delivery</Label>
+            <select
+              className="mt-2 p-5 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              id="estimatedDelivery"
+              {...register("estimatedDelivery", {
+                required: "Estimated Delivery is required",
+              })}
+            >
+              <option value="thisWeek">This Week</option>
+              <option value="thisMonth">This Month</option>
+              <option value="nextMonth">Next Month</option>
+            </select>
+            {errors.estimatedDelivery && (
+              <p className="text-red-500 text-sm">
+                {errors.estimatedDelivery.message}
               </p>
             )}
           </div>
@@ -201,7 +223,7 @@ export default function ProjectCreate() {
             <Button
               className="px-4 lg:px-10 py-2 lg:py-5"
               variant="destructive"
-              onClick={() => reset()}
+              onClick={handleReset}
             >
               Cancel
             </Button>
