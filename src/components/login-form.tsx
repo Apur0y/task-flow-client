@@ -19,6 +19,7 @@ type Errors = {
   error: string;
 };
 
+import { TAuthState } from "@/feature/auth/authSlice";
 type Inputs = {
   userEmail: string;
   userPassword: string | number;
@@ -48,18 +49,21 @@ export function LoginForm({
       const res = await login(data);
       const { data: userToken } = res.data;
 
-      const decoded = jwtDecode(userToken.accessToken);
-
-      console.log(decoded, "decoded token");
+      const decoded: TAuthState = jwtDecode(userToken.accessToken);
       if (res.data?.success) {
         localStorage.setItem("token", userToken.accessToken);
-        // router.push("/dashboard");
+
         dispatch(
           setUser({
             type: "TYPE_AUTH",
-            payload: { userEmail: decoded?.userEmail, role: decoded?.role },
+            payload: {
+              userEmail: decoded?.userEmail,
+              userEmployeeId: decoded.userEmployeeId,
+              role: decoded?.role,
+            },
           })
         );
+        router.push("/dashboard");
         toast.success("Login successful!");
       } else if (res?.error?.data?.message) {
         toast.error(res?.error?.data?.message);
