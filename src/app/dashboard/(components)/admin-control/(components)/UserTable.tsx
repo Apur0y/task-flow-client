@@ -63,7 +63,7 @@ const UserTable: FC = () => {
     const responce = await createUser(formattedData);
     if ('data' in responce && responce.data) {
         setUsers(users);
-      toast("User Creation Successfull");
+      toast.success("User Creation Successfull");
     reset();
     
 
@@ -76,9 +76,9 @@ const UserTable: FC = () => {
   const handleUserDelete=async(id:string)=>{
     console.log(id)
     const responce = await deleteUser(id);
-    if(responce){
+    if('data' in responce && responce.data){
       console.log(responce)
-      toast("User deleted")
+      toast.success("User deleted")
     }
   }
 
@@ -101,7 +101,7 @@ const UserTable: FC = () => {
 
   }, [data])
 
-  console.log(users)
+
 
   return (
     <div className="p-6 bg-white md:px-9">
