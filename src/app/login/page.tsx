@@ -1,7 +1,8 @@
 "use client";
-import { LoginForm } from "@/components/Login-form";
+
 import Lottie from "lottie-react";
 import loginAnimation from "../../assets/lottieFile/login-animation.json";
+import { LoginForm } from "@/components/Login-form";
 
 export default function LoginPage() {
   return (
