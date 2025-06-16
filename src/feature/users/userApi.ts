@@ -9,9 +9,17 @@ export const userCreation = createBaseApi.injectEndpoints({
         method: "POST",
         body: user,
       }),
-        })
+        }),
+           deleteUser: build.mutation({
+             query: (id) => ({
+        url: `/api/user/${id}`,
+        method: "DELETE",
+        
+      }),
+        }),
+
     })
 })
 
 
-export const { useCreateUserMutation} = userCreation;
+export const { useCreateUserMutation, useDeleteUserMutation} = userCreation;

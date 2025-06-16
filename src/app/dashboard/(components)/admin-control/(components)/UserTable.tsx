@@ -1,12 +1,13 @@
 'use client';
 
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
-import { useCreateUserMutation } from '@/feature/users/userApi';
+import { useCreateUserMutation, useDeleteUserMutation } from '@/feature/users/userApi';
 import { Calendar, Search } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
-import { toast } from 'sonner';
+
 
 interface User {
   userJoiningDate: string;
@@ -36,8 +37,11 @@ const UserTable: FC = () => {
     // Add more sample users if needed
   ]);
 
+
   const { data } = useGetAllUserQuery({});
   const [createUser] = useCreateUserMutation()
+  const [deleteUser] = useDeleteUserMutation()
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
   const {
     register,
@@ -47,8 +51,7 @@ const UserTable: FC = () => {
   } = useForm<User>();
 
   const onSubmit = async (data: User) => {
-
-      const originalDate = data.userJoiningDate; // "2025-06-08"
+  const originalDate = data.userJoiningDate; // "2025-06-08"
   const [year, month, day] = originalDate.split('-');
   const formattedDate = `${day}-${month}-${year}`; // "08-06-2025"
 
@@ -57,27 +60,43 @@ const UserTable: FC = () => {
     userJoiningDate: formattedDate,
   };
 
-    console.log('Form Submitted:', formattedData);
-
     const responce = await createUser(formattedData);
-
     if ('data' in responce && responce.data) {
-      toast("User Creation Successfull")
-      reset();
+        setUsers(users);
+      toast("User Creation Successfull");
+    reset();
+    
 
       (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
     } else {
       console.log(responce)
     }
-
-
-
   };
 
+  const handleUserDelete=async(id:string)=>{
+    console.log(id)
+    const responce = await deleteUser(id);
+    if(responce){
+      console.log(responce)
+      toast("User deleted")
+    }
+  }
+
+  const handleSearch=(searchInput:string)=>{
+ const lowerSearch = searchInput.toLowerCase();
+
+  const filtered = users.filter(user =>
+    user.userEmail.toLowerCase().includes(lowerSearch) ||
+    user.userName.toLowerCase().includes(lowerSearch)
+  );
+
+  setFilteredUsers(filtered);
+  }
 
   useEffect(() => {
     if (data?.data) {
       setUsers(data?.data)
+      setFilteredUsers(data?.data)
     }
 
   }, [data])
@@ -98,6 +117,7 @@ const UserTable: FC = () => {
               type="text"
               className="pl-10 py-2 md:px-15 border rounded-lg w-full"
               placeholder="Search by email"
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
         </div>
@@ -118,46 +138,59 @@ const UserTable: FC = () => {
         <table className="min-w-full bg-white shadow border border-gray-200">
           <thead>
             <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-              <th className="px-4 py-2 border">S.L</th>
-              <th className="px-4 py-2 border">Join Date</th>
-              <th className="px-4 py-2 border">Name</th>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Role</th>
-              <th className="px-4 py-2 border">Password</th>
-              <th className="px-4 py-2 border">Employee ID</th>
-              <th className="px-4 py-2 border">Address</th>
-              <th className="px-4 py-2 border">Phone</th>
-              <th className="px-4 py-2 border">Photo</th>
-              <th className="px-4 py-2 border text-center">Actions</th>
+              <th className="px-4 py-2 ">S.L</th>
+              <th className="px-4 py-2 ">Join Date</th>
+              <th className="px-4 py-2 ">Name</th>
+              <th className="px-4 py-2 ">Email</th>
+              <th className="px-4 py-2 ">Role</th>
+              <th className="px-4 py-2 ">Password</th>
+              <th className="px-4 py-2 ">Employee ID</th>
+              <th className="px-4 py-2 ">Address</th>
+              <th className="px-4 py-2 ">Phone</th>
+              <th className="px-4 py-2 ">Photo</th>
+              <th className="px-4 py-2  text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {filteredUsers.map((user, index) => (
               <tr key={index} className="text-sm text-gray-800">
-                <td className="px-4 py-2 border">{index + 1}</td>
-                <td className="px-4 py-2 border">{user.userJoiningDate}</td>
-                <td className="px-4 py-2 border">{user.userName}</td>
-                <td className="px-4 py-2 border">{user.userEmail}</td>
-                <td className="px-4 py-2 border">{user.userRole}</td>
-                <td className="px-4 py-2 border">{user.userPassword}</td>
-                <td className="px-4 py-2 border">{user.userEmployeeId}</td>
-                <td className="px-4 py-2 border">{user.address}</td>
-                <td className="px-4 py-2 border">{user.phone}</td>
-                <td className="px-4 py-2 border">
+                <td className="px-4 py-2 ">{index + 1}</td>
+                <td className="px-4 py-2 ">{user.userJoiningDate}</td>
+                <td className="px-4 py-2  flex gap-2">
+                   <img
+                    src={user.photo}
+                    alt=''
+                    className="w-10 h-10 hidden lg:flex object-cover  bg-slate-500 rounded-full"
+                  />
+                  
+                  <p className='pt-2'>{user.userName}</p>
+                  </td>
+                <td className="px-4 py-2 ">{user.userEmail}</td>
+                <td className="px-4 py-2 ">{user.userRole}</td>
+                <td className="px-4 py-2 ">
+                  
+                  {/* {user.userPassword} */}
+                  <button className='text-task-primary hover:underline cursor-pointer'>Manage Password</button>
+                   
+                  </td>
+                <td className="px-4 py-2 ">{user.userEmployeeId}</td>
+                <td className="px-4 py-2 ">{user.address}</td>
+                <td className="px-4 py-2 ">{user.phone}</td>
+                <td className="px-4 py-2 ">
                   <img
                     src={user.photo}
                     alt={user.userName}
                     className="w-10 h-10 object-cover rounded-full"
                   />
                 </td>
-                <td className="px-4 py-2 border text-center space-x-2">
-                  <button className="text-blue-500 hover:text-blue-700">
-                    <FaEye />
-                  </button>
-                  <button className="text-yellow-500 hover:text-yellow-700">
+                <td className="px-4 py-2  text-center space-x-2">
+                
+                  <button className="text-task-primary hover:text-yellow-700">
                     <FaEdit />
                   </button>
-                  <button className="text-red-500 hover:text-red-700">
+                  <button
+                  onClick={()=>handleUserDelete(user.userEmployeeId)}
+                  className="text-red-500 hover:text-red-700">
                     <FaTrash />
                   </button>
                 </td>
@@ -197,11 +230,19 @@ const UserTable: FC = () => {
 
             <div>
               <label className="block text-sm font-medium">Role</label>
-              <input
-                type="text"
-                {...register('userRole', { required: 'Role is required' })}
-                className="input input-bordered bg-white border border-gray-200 w-full"
-              />
+              <select
+              {...register('userRole', { required: 'Role is required' })}
+              className="input input-bordered bg-white border border-gray-200 w-full"
+              defaultValue=""
+              >
+              <option value="" disabled>
+                Select role
+              </option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+              <option value="client">Client</option>
+              </select>
+              {errors.userRole && <p className="text-red-500 text-xs">{errors.userRole.message}</p>}
             </div>
 
             <div>
