@@ -10,7 +10,7 @@ interface PageProps {
   params: { [key: string]: string };
 }
 
-export default function page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
 
     const [role, setRole] = useState("")
  
@@ -19,7 +19,7 @@ export default function page({ params }: PageProps) {
          setRole("admin")
     },[])
 
- let adminRoutes = route === "Users" && role ==="admin"
+ const adminRoutes = route === "Users" && role ==="admin"
    ? <div><UsersInfo></UsersInfo></div>
    : route === "Projects"  && role ==="admin"
      ? <div><ProjectInfo></ProjectInfo></div>
@@ -27,7 +27,7 @@ export default function page({ params }: PageProps) {
      ? <div><TeamInfo></TeamInfo></div>
      : null;
 
- let leaderRoutes = route === "Role Assign" && role ==="teamLeader"
+ const leaderRoutes = route === "Role Assign" && role ==="teamLeader"
    ? <div><AssignRole></AssignRole></div>
    : route === "Project Update"  && role ==="teamLeader"
      ? <div><ProjectUpdate></ProjectUpdate></div>

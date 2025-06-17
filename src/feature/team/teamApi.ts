@@ -3,21 +3,21 @@ import { createBaseApi } from "@/redux/api/basuUrlslice";
 
 export const userCreation = createBaseApi.injectEndpoints({
     endpoints:(build)=>({
-        createUser: build.mutation({
+        createTeam: build.mutation({
              query: (user) => ({
-        url: "/api/user",
+        url: "/api/team",
         method: "POST",
         body: user,
       }),
         }),
-           deleteUser: build.mutation({
+           deleteTeam: build.mutation({
              query: (id) => ({
-        url: `/api/user/${id}`,
+        url: `/api/team/${id}`,
         method: "DELETE",
         
       }),
         }),
-           updateUser: build.mutation({
+           updateTeam: build.mutation({
              query: (body) => ({
         url: '/api/user/update-user',
         method: "UPDATE",
@@ -30,4 +30,4 @@ export const userCreation = createBaseApi.injectEndpoints({
 })
 
 
-export const { useCreateUserMutation, useDeleteUserMutation} = userCreation;
+export const { useCreateTeamMutation, useDeleteTeamMutation} = userCreation;

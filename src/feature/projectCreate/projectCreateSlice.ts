@@ -1,6 +1,6 @@
 import { createBaseApi } from "@/redux/api/basuUrlslice";
 
-export const createProject = createBaseApi.injectEndpoints({
+export const projectSlice = createBaseApi.injectEndpoints({
   endpoints: (builder) => ({
     createProject: builder.mutation({
       query: (projectData) => ({
@@ -9,7 +9,11 @@ export const createProject = createBaseApi.injectEndpoints({
         body: projectData,
       }),
     }),
+    getProjectsCatchall: builder.query({
+      query: () => "/api/project",
+    }),
   }),
 });
 
-export const { useCreateProjectMutation } = createProject;
+export const { useCreateProjectMutation, useGetProjectsCatchallQuery } =
+  projectSlice;
