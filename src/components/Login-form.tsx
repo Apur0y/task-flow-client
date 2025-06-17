@@ -15,10 +15,6 @@ import { jwtDecode } from "jwt-decode";
 import { useAppDispatch } from "@/lib/hooks";
 import { setUser } from "@/feature/auth/authSlice";
 
-type Errors = {
-  error: string;
-};
-
 import { TAuthState } from "@/feature/auth/authSlice";
 type Inputs = {
   userEmail: string;
@@ -41,7 +37,6 @@ export function LoginForm({
   } = useForm<Inputs>();
 
   const dispatch = useAppDispatch();
-
   const [login, { isLoading }] = useUserCreationMutation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -50,6 +45,7 @@ export function LoginForm({
       const { data: userToken } = res.data;
 
       const decoded: TAuthState = jwtDecode(userToken.accessToken);
+
       if (res.data?.success) {
         localStorage.setItem("token", userToken.accessToken);
 

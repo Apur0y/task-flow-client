@@ -11,7 +11,7 @@ export default function LoginPage() {
           <a href="#" className="flex items-center gap-2 font-medium">
             <span className="text-task-primary text-2xl font-bold">
               {" "}
-              Tash Flow
+              Task Flow
             </span>
           </a>
         </div>

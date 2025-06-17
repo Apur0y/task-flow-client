@@ -2,27 +2,32 @@
 import { useGetSignleUserQuery } from "@/feature/auth/authCredentialSlice";
 import { useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaBars, FaBell, FaSun, FaMoon } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { TAuthState } from "@/feature/auth/authSlice";
 
 export default function Navbar() {
+  const [decoded, setDecoded] = useState<TAuthState | null>(null);
   const [darkMode, setDarkMode] = useState(false);
-  const localToken = localStorage.getItem("token");
 
-  const decoded: TAuthState = jwtDecode(localToken);
-  const user = useAppSelector((state) => state.auth) || {};
+  const user = useAppSelector((state) => state.auth);
 
   const { data } = useGetSignleUserQuery(
-    user.userEmployeeId || decoded.userEmployeeId
+    user.userEmployeeId || decoded?.userEmployeeId
   );
   const { userEmail, userName } = data?.data || {};
 
+  useEffect(() => {
+    const localToken = localStorage.getItem("token");
+    if (localToken) {
+      const decodedToken: TAuthState = jwtDecode(localToken);
+      setDecoded(decodedToken);
+    }
+  }, []);
+
   const toggleTheme = () => {
     setDarkMode(!darkMode);
-    // Implement actual dark mode toggling logic if using tailwind's dark mode class strategy
-    // e.g., document.documentElement.classList.toggle('dark')
   };
 
   return (
