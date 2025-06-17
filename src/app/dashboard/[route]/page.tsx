@@ -7,40 +7,44 @@ import AssignRole from '../(components)/leader-control/AssignRole'
 import ProjectUpdate from '../(components)/leader-control/ProjectUpdate'
 
 interface PageProps {
-  params: { [key: string]: string };
+  params: Promise<{
+    route: string;
+  }>;
 }
 
 export default function Page({ params }: PageProps) {
+  const [role, setRole] = useState("")
+  const [route, setRoute] = useState("")
 
-    const [role, setRole] = useState("")
- 
-    const  route  = decodeURIComponent(params.route);
-    useEffect(()=>{
-         setRole("admin")
-    },[])
+  useEffect(() => {
+    // Resolve the params Promise and decode the route
+    params.then(resolvedParams => {
+      const decodedRoute = decodeURIComponent(resolvedParams.route);
+      setRoute(decodedRoute);
+    });
+    
+    setRole("admin"); // Set your role logic here
+  }, [params])
 
- const adminRoutes = route === "Users" && role ==="admin"
-   ? <div><UsersInfo></UsersInfo></div>
-   : route === "Projects"  && role ==="admin"
-     ? <div><ProjectInfo></ProjectInfo></div>
-     :  route === "Teams"  && role ==="admin"
-     ? <div><TeamInfo></TeamInfo></div>
-     : null;
+  const adminRoutes = route === "Users" && role === "admin"
+    ? <div><UsersInfo /></div>
+    : route === "Projects" && role === "admin"
+    ? <div><ProjectInfo /></div>
+    : route === "Teams" && role === "admin"
+    ? <div><TeamInfo /></div>
+    : null;
 
- const leaderRoutes = route === "Role Assign" && role ==="teamLeader"
-   ? <div><AssignRole></AssignRole></div>
-   : route === "Project Update"  && role ==="teamLeader"
-     ? <div><ProjectUpdate></ProjectUpdate></div>
-     :  route === "Teams"  && role ==="admin"
-     ? <div><TeamInfo></TeamInfo></div>
-     : null;
-
+  const leaderRoutes = route === "Role Assign" && role === "teamLeader"
+    ? <div><AssignRole /></div>
+    : route === "Project Update" && role === "teamLeader"
+    ? <div><ProjectUpdate /></div>
+    : route === "Teams" && role === "teamLeader" // Fixed: was "admin"
+    ? <div><TeamInfo /></div>
+    : null;
 
   return (
     <div>
-      {
-       adminRoutes  || leaderRoutes
-      }
+      {adminRoutes || leaderRoutes}
     </div>
   )
 }

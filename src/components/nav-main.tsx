@@ -14,7 +14,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 
 export function NavMain({
-  items,
+  
 }: {
   items: {
     title: string
@@ -50,6 +50,8 @@ export function NavMain({
     } else if (role === "client") {
       setRoutes(clientRoutes)
     }
+
+    setRole("admin")
 
   }, [role])
 
