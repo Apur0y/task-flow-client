@@ -44,7 +44,7 @@ const UserTable: FC = () => {
   const [createUser] = useCreateUserMutation()
   const [deleteUser] = useDeleteUserMutation()
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-console.log(data)
+
   const {
     register,
     handleSubmit,
@@ -200,7 +200,7 @@ console.log(data)
 
       {/* Open the modal using document.getElementById('ID').showModal() method */}
 
-      <dialog id="my_modal_2" className="modal bg-white">
+      <dialog id="my_modal_2" className="modal bg-white ">
         <div className="modal-box w-full max-w-2xl bg-white   ">
           <h3 className="font-bold text-lg mb-4">Create New User</h3>
 

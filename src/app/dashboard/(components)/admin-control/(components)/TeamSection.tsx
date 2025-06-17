@@ -2,11 +2,11 @@ import {  Search } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import TeamCard from './TeamCard';
 import { useForm } from 'react-hook-form';
-import { useCreateTeamMutation } from '@/feature/team/teamApi';
+import { useCreateTeamMutation, useGetAllTeamQuery } from '@/feature/team/teamApi';
 import toast from 'react-hot-toast';
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
 
-interface Team {
+export interface Team {
 
   teamName: string;
   teamID: string;
@@ -24,21 +24,28 @@ interface People {
 
 export default function TeamSection() {
 
-  // const [users, setUsers] = useState<[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   // const [filteredUsers, setFilteredUsers] = useState<[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<People[]>([]);
+  // const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
 
   const [teamCreation] = useCreateTeamMutation();
   const { data: people } = useGetAllUserQuery({});
+   const {data:allteams} =useGetAllTeamQuery({});
 
-  useEffect(() => {
-    if (people?.data) {
-      console.log(people.data)
-      setFilteredMembers(people.data)
-    }
-  }, [])
 
-  console.log(people)
+useEffect(() => {
+  if (people?.data) {
+    setFilteredMembers(people.data);
+  }
+
+  if (allteams?.data) {
+    setTeams(allteams.data);
+    console.log(teams)
+  }
+}, [people?.data, allteams?.data]);
+
+
   const {
     register,
     handleSubmit,
@@ -82,8 +89,7 @@ export default function TeamSection() {
     }
   }
 
-
-console.log(filteredMembers)
+console.log(teams)
 
   return (
     <div className=' bg-white py-7 px-4 mx-5 rounded-lg'>
@@ -116,12 +122,13 @@ console.log(filteredMembers)
       </section>
 
     <div className="flex flex-wrap justify-center gap-4">
-  {["2", "3", "5", "6"].map((p) => (
+  {teams.map((team) => (
     <div
-      key={p}
+      key={team.teamID}
+    
       className="w-full  lg:w-[48%]  xl:w-[32%] 2xl:w-[24%]"
     >
-      <TeamCard />
+      <TeamCard   team={team} />
     </div>
   ))}
 </div>

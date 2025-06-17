@@ -1,10 +1,13 @@
 import { Edit, Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import { Team } from './TeamSection';
 
-export default function TeamCard() {
+export default function TeamCard({ team }: { team: Team }) {
     const [showPhone, setShowPhone] = useState(false);
     const [showEmail, setShowEmail] = useState(false);
+    console.log(team)
+    const {teamName, teamLeaderEmail,teamColeaderEmail,teamMembersEmails,teamID} =team;
 
     return (
         <div className="mx-auto  bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
@@ -14,8 +17,8 @@ export default function TeamCard() {
                 <div className='flex gap-2'>
                     <Image src="https://admin.pixelstrap.net/riho/assets/images/social-app/timeline-3.png" alt="" height={10} width={10} className='h-15 w-15 rounded-full bg-gray-500'></Image>
                     <div className='mt-2'>
-                        <h2 className="text-md font-bold">Team Phoenix</h2>
-                        <p className="text-sm">Web Development Team</p>
+                        <h2 className="text-md font-bold">{teamName}</h2>
+                        <p className="text-sm">{teamID}</p>
                     </div>
                 </div>
 
@@ -43,23 +46,23 @@ export default function TeamCard() {
 
             <div className='m-3 border rounded-lg'>
                 <div className=" p-2 flex justify-between text-white bg-task-primary rounded-t-md">
-                    <p className=" font-semibold ">Alice Johnson</p>
+                    <p className=" font-semibold ">{teamLeaderEmail}</p>
                     <p className=""> Leader</p>
                 </div>
 
                 <div className="p-2 bg-teal-100 flex justify-between">
-                    <p className="font-semibold ">Bob Smith</p>
+                    <p className="font-semibold ">{teamColeaderEmail}</p>
                     <p className="">Co-Leader</p>
                 </div>
 
                 <div>
                     {
-                        ["Charlie Kim", "Danielle Ray", 'Edward Lee'].map(member => (<>
-                            <div className="p-2  flex justify-between">
+                        teamMembersEmails.map((member: string, idx: number) => (
+                            <div className="p-2  flex justify-between" key={idx}>
                                 <p className="font-semibold ">{member}</p>
                                 <p className="">Member</p>
                             </div>
-                        </>))
+                        ))
                     }
                 </div>
 
