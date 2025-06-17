@@ -7,14 +7,14 @@ export default function TeamCard() {
     const [showEmail, setShowEmail] = useState(false);
 
     return (
-        <div className="mx-auto max-w-md bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
+        <div className="mx-auto  bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
 
             <div className="px-6 py-4 flex justify-between border-b gap-2">
 
                 <div className='flex gap-2'>
                     <Image src="https://admin.pixelstrap.net/riho/assets/images/social-app/timeline-3.png" alt="" height={10} width={10} className='h-15 w-15 rounded-full bg-gray-500'></Image>
                     <div className='mt-2'>
-                        <h2 className="text-xl font-bold">Team Phoenix</h2>
+                        <h2 className="text-md font-bold">Team Phoenix</h2>
                         <p className="text-sm">Web Development Team</p>
                     </div>
                 </div>
@@ -25,17 +25,17 @@ export default function TeamCard() {
                 </div>
             </div>
 
-            <div className="my-4 flex justify-center gap-2 md:gap-4 text-center text-sm  divide-x divide-gray-300">
+            <div className="my-4 flex justify-center gap-2  text-center text-sm  divide-x divide-gray-300">
                 <div className="px-2 sm:px-4 py-3">
-                    <p className="font-bold md:text-lg">Completed</p>
+                    <p className="font-bold ">Completed</p>
                     <p className='font-semibold'>12</p>
                 </div>
                 <div className="px-2 sm:px-4 py-3">
-                    <p className="font-bold md:text-lg">Running</p>
+                    <p className="font-bold ">Running</p>
                     <p className='font-semibold'>3</p>
                 </div>
                 <div className="px-2 sm:px-4 py-3">
-                    <p className="font-bold md:text-lg">Earnings</p>
+                    <p className="font-bold ">Earnings</p>
                     <p className='font-semibold'>$15,000</p>
                 </div>
             </div>

@@ -112,14 +112,16 @@ console.log(filteredMembers)
 
       </section>
 
-      <div className='flex flex-wrap gap-3'>
-        {
-          ["2", "3", "5", "6"].map(p => <TeamCard key={p}></TeamCard>)
-        }
-
-
-      </div>
-
+    <div className="flex flex-wrap justify-center gap-4">
+  {["2", "3", "5", "6"].map((p) => (
+    <div
+      key={p}
+      className="w-full  lg:w-[48%]  xl:w-[32%] 2xl:w-[24%]"
+    >
+      <TeamCard />
+    </div>
+  ))}
+</div>
 
 
 

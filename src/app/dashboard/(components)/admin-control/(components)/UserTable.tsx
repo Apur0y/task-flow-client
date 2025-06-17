@@ -6,7 +6,7 @@ import { Calendar, Search } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import {  FaEdit, FaTrash } from 'react-icons/fa';
 
 
 interface User {
@@ -149,7 +149,7 @@ const UserTable: FC = () => {
               <th className="px-4 py-2 ">Employee ID</th>
               <th className="px-4 py-2 ">Address</th>
               <th className="px-4 py-2 ">Phone</th>
-              <th className="px-4 py-2 ">Photo</th>
+           
               <th className="px-4 py-2  text-center">Actions</th>
             </tr>
           </thead>
@@ -178,13 +178,7 @@ const UserTable: FC = () => {
                 <td className="px-4 py-2 ">{user.userEmployeeId}</td>
                 <td className="px-4 py-2 ">{user.address}</td>
                 <td className="px-4 py-2 ">{user.phone}</td>
-                <td className="px-4 py-2 ">
-                  <img
-                    src={user.photo}
-                    alt={user.userName}
-                    className="w-10 h-10 object-cover rounded-full"
-                  />
-                </td>
+                
                 <td className="px-4 py-2  text-center space-x-2">
                 
                   <button className="text-task-primary hover:text-yellow-700">
