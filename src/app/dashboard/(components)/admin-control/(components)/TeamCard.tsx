@@ -6,8 +6,11 @@ import { Team } from './TeamSection';
 export default function TeamCard({ team }: { team: Team }) {
     const [showPhone, setShowPhone] = useState(false);
     const [showEmail, setShowEmail] = useState(false);
-    console.log(team)
+
     const {teamName, teamLeaderEmail,teamColeaderEmail,teamMembersEmails,teamID} =team;
+    const onlyMembers = teamMembersEmails.filter(
+        (member: string) => member !== teamLeaderEmail && member !== teamColeaderEmail
+    );
 
     return (
         <div className="mx-auto  bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
@@ -15,7 +18,8 @@ export default function TeamCard({ team }: { team: Team }) {
             <div className="px-6 py-4 flex justify-between border-b gap-2">
 
                 <div className='flex gap-2'>
-                    <Image src="https://admin.pixelstrap.net/riho/assets/images/social-app/timeline-3.png" alt="" height={10} width={10} className='h-15 w-15 rounded-full bg-gray-500'></Image>
+                    {/* <Image src="https://admin.pixelstrap.net/riho/assets/images/social-app/timeline-3.png" alt="" height={10} width={10} className='h-15 w-15 rounded-full bg-gray-500'></Image> */}
+                    <p className='h-15 w-15 rounded-full bg-gradient-to-br from-green-700 via-green-900 to-emerald-700'></p>
                     <div className='mt-2'>
                         <h2 className="text-md font-bold">{teamName}</h2>
                         <p className="text-sm">{teamID}</p>
@@ -44,7 +48,7 @@ export default function TeamCard({ team }: { team: Team }) {
             </div>
 
 
-            <div className='m-3 border rounded-lg'>
+            <div className='m-3 border border-gray-200 rounded-lg max-h-36 overflow-auto'>
                 <div className=" p-2 flex justify-between text-white bg-task-primary rounded-t-md">
                     <p className=" font-semibold ">{teamLeaderEmail}</p>
                     <p className=""> Leader</p>
@@ -57,7 +61,7 @@ export default function TeamCard({ team }: { team: Team }) {
 
                 <div>
                     {
-                        teamMembersEmails.map((member: string, idx: number) => (
+                    onlyMembers.map((member: string, idx: number) => (
                             <div className="p-2  flex justify-between" key={idx}>
                                 <p className="font-semibold ">{member}</p>
                                 <p className="">Member</p>

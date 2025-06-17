@@ -1,10 +1,12 @@
-import {  Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import TeamCard from './TeamCard';
 import { useForm } from 'react-hook-form';
 import { useCreateTeamMutation, useGetAllTeamQuery } from '@/feature/team/teamApi';
 import toast from 'react-hot-toast';
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
+
+import { Select } from '@radix-ui/react-select';
 
 export interface Team {
 
@@ -16,7 +18,7 @@ export interface Team {
 
 }
 
-interface People {
+export interface People {
   userEmail: string;
   userName: string
 }
@@ -28,22 +30,33 @@ export default function TeamSection() {
   // const [filteredUsers, setFilteredUsers] = useState<[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<People[]>([]);
   // const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([])
+
+  const [errorMe,setErrorMe]=useState("")
 
   const [teamCreation] = useCreateTeamMutation();
   const { data: people } = useGetAllUserQuery({});
-   const {data:allteams} =useGetAllTeamQuery({});
+  const { data: allteams } = useGetAllTeamQuery({});
 
 
-useEffect(() => {
-  if (people?.data) {
-    setFilteredMembers(people.data);
-  }
+  const options = filteredMembers.map(p => ({
+    value: "p.userEmail",
+    label: "p.userEmail",
+  }));
 
-  if (allteams?.data) {
-    setTeams(allteams.data);
-    console.log(teams)
-  }
-}, [people?.data, allteams?.data]);
+  const [selectedOptions, setSelectedOptions] = useState(["hi", "ha", "nop"]);
+
+
+  useEffect(() => {
+    if (people?.data) {
+      setFilteredMembers(people.data);
+    }
+
+    if (allteams?.data) {
+      setTeams(allteams.data);
+      console.log(teams)
+    }
+  }, [people?.data, allteams?.data]);
 
 
   const {
@@ -68,28 +81,21 @@ useEffect(() => {
 
   }
 
-  const onSubmit = async (data:Team) => {
-    console.log(data);
-    const res = await teamCreation({
-      "teamName": "team X",
-      "teamID": "TM-008",
-      "teamLeaderEmail": "emilik@smtech.com",
-      "teamColeaderEmail": "emili@smtech.com",
-      "teamMembersEmails": [
-        "ema@smtech.com",
-        "emilik@smtech.com",
-        "emili@smtech.com"
-      ]
-    })
+  const onSubmit = async (data: Team) => {
+    const res = await teamCreation(data) as { data?: any; error?: any };
 
-    if (res) {
+    if (!('error' in res)) {
       console.log(res)
       toast.success("Team creation success")
-      reset();
+
+    } else {
+      console.log("Else error",res)
+      setErrorMe(res.error.data.message);
+      console.log(res.error.data.message)
     }
   }
 
-console.log(teams)
+
 
   return (
     <div className=' bg-white py-7 px-4 mx-5 rounded-lg'>
@@ -121,17 +127,17 @@ console.log(teams)
 
       </section>
 
-    <div className="flex flex-wrap justify-center gap-4">
-  {teams.map((team) => (
-    <div
-      key={team.teamID}
-    
-      className="w-full  lg:w-[48%]  xl:w-[32%] 2xl:w-[24%]"
-    >
-      <TeamCard   team={team} />
-    </div>
-  ))}
-</div>
+      <div className="flex flex-wrap justify-center gap-4">
+        {teams.map((team) => (
+          <div
+            key={team.teamID}
+
+            className="w-full  lg:w-[48%]  xl:w-[32%] 2xl:w-[24%]"
+          >
+            <TeamCard team={team} />
+          </div>
+        ))}
+      </div>
 
 
 
@@ -204,44 +210,28 @@ console.log(teams)
 
 
 
-            <div >
+            <div className="col-span-full">
               <label className="block text-sm font-medium">Members</label>
               <select
-                {...register('teamColeaderEmail', { required: 'Role is required' })}
-                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto h-100"
+                {...register('teamMembersEmails', { required: 'Select at least one member' })}
+                className="input input-bordered border bg-white border-gray-200 h-44 w-full"
                 multiple
+                size={5}
               >
-                <option value="" disabled>Select Members</option>
                 {filteredMembers.map((p) => (
-                  <option key={p.userEmail} value={p.userEmail} className='overflow-auto'>
+                  <option key={p.userEmail} value={p.userEmail}>
                     {p.userEmail}
                   </option>
                 ))}
               </select>
-              {errors.teamLeaderEmail && (
-                <p className="text-red-500 text-xs">{errors.teamLeaderEmail.message}</p>
+              {errors.teamMembersEmails && (
+                <p className="text-red-500 text-xs">{errors.teamMembersEmails.message}</p>
               )}
-
             </div>
 
-
-            {/* <div>
-              <label className="block text-sm font-medium">Phone</label>
-              <input
-                type="text"
-                {...register('phone')}
-                className="input input-bordered bg-white border border-gray-200 w-full"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">Photo URL</label>
-              <input
-                type="url"
-                {...register('photo')}
-                className="input input-bordered bg-white border border-gray-200 w-full"
-              />
-            </div> */}
+          <div className='text-red-500'>
+            {errorMe}
+          </div>
 
             <div className="col-span-full mt-4">
               <button type="submit" className="btn border-none bg-task-primary w-full">

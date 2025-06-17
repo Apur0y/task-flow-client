@@ -48,7 +48,7 @@ export function LoginForm({
       const decoded: TAuthState = jwtDecode(userToken.accessToken);
 
       if (res.data?.success) {
-        localStorage.setItem("token", userToken.accessToken);
+        localStorage.setItem("acessToken", userToken.accessToken);
 
         dispatch(
           setUser({
