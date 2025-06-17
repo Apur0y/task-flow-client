@@ -12,7 +12,7 @@ export const userCreation = createBaseApi.injectEndpoints({
         }),
            deleteTeam: build.mutation({
              query: (id) => ({
-        url: `/api/user/${id}`,
+        url: `/api/team/${id}`,
         method: "DELETE",
         
       }),
