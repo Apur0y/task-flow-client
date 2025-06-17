@@ -44,7 +44,7 @@ const UserTable: FC = () => {
   const [createUser] = useCreateUserMutation()
   const [deleteUser] = useDeleteUserMutation()
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-
+console.log(data)
   const {
     register,
     handleSubmit,
@@ -97,6 +97,7 @@ const UserTable: FC = () => {
 
   useEffect(() => {
     if (data?.data) {
+      console.log(data.data)
       setUsers(data?.data)
       setFilteredUsers(data?.data)
     }
