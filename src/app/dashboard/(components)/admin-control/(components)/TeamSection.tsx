@@ -1,4 +1,4 @@
-import { Calendar, Search } from 'lucide-react'
+import {  Search } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import TeamCard from './TeamCard';
 import { useForm } from 'react-hook-form';
@@ -6,7 +6,7 @@ import { useCreateTeamMutation } from '@/feature/team/teamApi';
 import toast from 'react-hot-toast';
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
 
-interface User {
+interface Team {
 
   teamName: string;
   teamID: string;
@@ -24,8 +24,8 @@ interface People {
 
 export default function TeamSection() {
 
-  const [users, setUsers] = useState<[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<[]>([]);
+  // const [users, setUsers] = useState<[]>([]);
+  // const [filteredUsers, setFilteredUsers] = useState<[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<People[]>([]);
 
   const [teamCreation] = useCreateTeamMutation();
@@ -44,12 +44,13 @@ export default function TeamSection() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<User>();
+  } = useForm<Team>();
 
 
 
   const handleSearch = (searchInput: string) => {
     const lowerSearch = searchInput.toLowerCase();
+    console.log(lowerSearch);
 
     //   const filtered = users.filter(user =>
     //     user.userEmail.toLowerCase().includes(lowerSearch) ||
@@ -60,7 +61,8 @@ export default function TeamSection() {
 
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:Team) => {
+    console.log(data);
     const res = await teamCreation({
       "teamName": "team X",
       "teamID": "TM-008",
@@ -76,6 +78,7 @@ export default function TeamSection() {
     if (res) {
       console.log(res)
       toast.success("Team creation success")
+      reset();
     }
   }
 

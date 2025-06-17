@@ -1,5 +1,4 @@
 import React from 'react'
-import TeamCard from './(components)/TeamSection'
 import TeamSection from './(components)/TeamSection'
 
 export default function TeamInfo() {
