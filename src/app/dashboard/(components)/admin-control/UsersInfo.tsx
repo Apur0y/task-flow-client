@@ -1,5 +1,4 @@
 'use client'
-import React, { useEffect, useState } from 'react'
 import UserTable from './(components)/UserTable'
 // import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice'
 // import { ClockFading } from 'lucide-react'
