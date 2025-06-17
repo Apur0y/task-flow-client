@@ -15,6 +15,7 @@ remotePatterns: [
   },
 ],
 
-};
+},
+}
 
 export default nextConfig;
