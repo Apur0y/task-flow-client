@@ -1,7 +1,6 @@
 import React from 'react'
 import TeamSection from './(components)/TeamSection'
-import { MultiSelect } from '@/components/multi-select'
-import Selections from './(components)/MultiSeletion'
+
 
 export default function TeamInfo() {
   return (

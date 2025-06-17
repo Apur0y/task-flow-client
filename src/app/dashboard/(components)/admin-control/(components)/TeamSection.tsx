@@ -6,7 +6,7 @@ import { useCreateTeamMutation, useGetAllTeamQuery } from '@/feature/team/teamAp
 import toast from 'react-hot-toast';
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
 
-import { Select } from '@radix-ui/react-select';
+// import { Select } from '@radix-ui/react-select';
 
 export interface Team {
 
@@ -30,7 +30,7 @@ export default function TeamSection() {
   // const [filteredUsers, setFilteredUsers] = useState<[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<People[]>([]);
   // const [filteredTeams, setFilteredTeams] = useState<Team[]>([]);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([])
+  // const [selectedMembers, setSelectedMembers] = useState<string[]>([])
 
   const [errorMe,setErrorMe]=useState("")
 
@@ -39,12 +39,6 @@ export default function TeamSection() {
   const { data: allteams } = useGetAllTeamQuery({});
 
 
-  const options = filteredMembers.map(p => ({
-    value: "p.userEmail",
-    label: "p.userEmail",
-  }));
-
-  const [selectedOptions, setSelectedOptions] = useState(["hi", "ha", "nop"]);
 
 
   useEffect(() => {
@@ -87,6 +81,9 @@ export default function TeamSection() {
     if (!('error' in res)) {
       console.log(res)
       toast.success("Team creation success")
+      reset();
+      setErrorMe("");
+       (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
 
     } else {
       console.log("Else error",res)
