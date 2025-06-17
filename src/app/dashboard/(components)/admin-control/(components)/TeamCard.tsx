@@ -65,30 +65,27 @@ export default function TeamCard() {
 
 
             </div>
-            <div className="flex justify-center gap-3 py-3">
+            <div className="flex justify-center md:gap-3 py-3">
                 <div
-                    className={`group flex items-center transition-all duration-1000 bg-green-200 p-2 rounded-full ${showPhone ? 'gap-2' : ''
-                        }`}
+                    className={`group flex items-center transition-all gap-1 duration-1000bg-green-200 p-2 rounded-full `}
                     onClick={() => setShowPhone(!showPhone)}
                 >
                     <Phone />
                     <p
-                        className={`${showPhone ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0'
-                            } group-hover:opacity-100 group-hover:max-w-xs transition-all duration-300 overflow-hidden whitespace-nowrap`}
+                        className={`group-hover:opacity-100 group-hover:max-w-xs transition-all duration-300 overflow-hidden whitespace-nowrap text-xs md:text-base`}
                     >
                         0178524789
                     </p>
                 </div>
 
                 <div
-                    className={`group flex items-center transition-all duration-1000 bg-red-200 p-2 rounded-full ${showEmail ? 'gap-2' : ''
-                        }`}
+                    className={`group flex items-center transition-all duration-1000  p-2 gap-1 rounded-full 
+                        `}
                     onClick={() => setShowEmail(!showEmail)}
                 >
                     <Mail />
                     <p
-                        className={`${showEmail ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0'
-                            } group-hover:opacity-100 group-hover:max-w-xs transition-all duration-300 overflow-hidden whitespace-nowrap`}
+                        className={`group-hover:opacity-100  group-hover:max-w-xs transition-all duration-300 overflow-hidden whitespace-nowrap text-xs md:text-base`}
                     >
                         taskflow@mail.com
                     </p>

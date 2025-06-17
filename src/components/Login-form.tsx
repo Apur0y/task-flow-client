@@ -1,3 +1,4 @@
+'use client'
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,14 +62,22 @@ export function LoginForm({
         );
         router.push("/dashboard");
         toast.success("Login successful!");
-      } else if (res?.error?.data?.message) {
-        toast.error(res?.error?.data?.message);
+      } else if (
+        res?.error &&
+        "data" in res.error &&
+        (res.error as { data?: { message?: string } }).data?.message
+      ) {
+        toast.error(
+          (res.error as { data?: { message?: string } }).data?.message || "Login failed. Please try again."
+        );
       }
       reset();
     } catch (error) {
       toast.error("Login failed. Please try again.");
+      console.log(error)
     }
   };
+
 
   return (
     <form
