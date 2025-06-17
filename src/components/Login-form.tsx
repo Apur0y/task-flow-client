@@ -10,11 +10,12 @@ import { useState } from "react";
 import { useUserCreationMutation } from "@/feature/auth/authCredentialSlice";
 import toast from "react-hot-toast";
 import { PulseLoader } from "react-spinners";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+import { useAppDispatch } from "@/lib/hooks";
+import { setUser } from "@/feature/auth/authSlice";
 
-type Errors = {
-  error: string;
-}
-
+import { TAuthState } from "@/feature/auth/authSlice";
 type Inputs = {
   userEmail: string;
   userPassword: string | number;
@@ -26,21 +27,39 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [passwordShow, setPasswordShow] = useState(false);
+  const router = useRouter();
 
   const {
     register,
     reset,
-
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
 
+  const dispatch = useAppDispatch();
   const [login, { isLoading }] = useUserCreationMutation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const res = await login(data);
+      const { data: userToken } = res.data;
+
+      const decoded: TAuthState = jwtDecode(userToken.accessToken);
+
       if (res.data?.success) {
+        localStorage.setItem("token", userToken.accessToken);
+
+        dispatch(
+          setUser({
+            type: "TYPE_AUTH",
+            payload: {
+              userEmail: decoded?.userEmail,
+              userEmployeeId: decoded.userEmployeeId,
+              role: decoded?.role,
+            },
+          })
+        );
+        router.push("/dashboard");
         toast.success("Login successful!");
       } else if (res?.error?.data?.message) {
         toast.error(res?.error?.data?.message);
