@@ -14,11 +14,20 @@ export const authCreation = createBaseApi.injectEndpoints({
       query: () => ({
         url: "/api/user",
         method: "GET",
-      })
-
+      }),
     }),
 
+    getSignleUser: build.query({
+      query: (employeeId) => ({
+        url: `/api/user/${employeeId}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useUserCreationMutation, useGetAllUserQuery } = authCreation;
+export const {
+  useUserCreationMutation,
+  useGetAllUserQuery,
+  useGetSignleUserQuery,
+} = authCreation;

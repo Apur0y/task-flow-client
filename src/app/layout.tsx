@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
 import StoreProvider from "./StoreProvider";
 
 import { Toaster } from "react-hot-toast";
-
 
 const montserrat = Montserrat({
   variable: "--font-montserrat", // ✅ Correct and clear
@@ -24,10 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-
-      <body  className={`${montserrat.variable}  antialiased`}>
-      
-
+      <body className={`${montserrat.variable}  antialiased`}>
         <StoreProvider>{children}</StoreProvider>
         <Toaster />
       </body>
