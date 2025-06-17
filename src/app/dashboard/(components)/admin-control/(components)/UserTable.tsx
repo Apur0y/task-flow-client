@@ -19,6 +19,7 @@ interface User {
   address: string;
   phone: string;
   photo: string;
+  _id:string
 }
 
 const UserTable: FC = () => {
@@ -33,6 +34,7 @@ const UserTable: FC = () => {
       address: 'Dhaka, Bangladesh',
       phone: '017XXXXXXXX',
       photo: 'https://example.com/photo.jpg',
+      _id:""
     },
     // Add more sample users if needed
   ]);
@@ -189,7 +191,7 @@ const UserTable: FC = () => {
                     <FaEdit />
                   </button>
                   <button
-                  onClick={()=>handleUserDelete(user.userEmployeeId)}
+                  onClick={()=>handleUserDelete(user._id)}
                   className="text-red-500 hover:text-red-700">
                     <FaTrash />
                   </button>
