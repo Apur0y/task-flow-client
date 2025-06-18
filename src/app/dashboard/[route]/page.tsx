@@ -15,7 +15,7 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  const [role, setRole] = useState("admin")
+  const [role, setRole] = useState("teamLeader")
   const [route, setRoute] = useState("")
    const auth = useSelector(selectAuth);
   // const accessToken = useSelector(selectAccessToken);
@@ -48,8 +48,6 @@ export default function Page({ params }: PageProps) {
     ? <div><AssignRole /></div>
     : route === "Project Update" && role === "teamLeader"
     ? <div><ProjectUpdate /></div>
-    : route === "Teams" && role === "teamLeader" // Fixed: was "admin"
-    ? <div><TeamInfo /></div>
     : null;
 
   return (

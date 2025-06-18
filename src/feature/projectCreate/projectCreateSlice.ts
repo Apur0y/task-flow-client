@@ -30,8 +30,14 @@ export const projectSlice = createBaseApi.injectEndpoints({
       }),
     }),
     getProjectsCatchall: builder.query({
-      query: () => "/api/project",
+         query: () => ({
+        url: '/api/project',
+        method: "GET",
+ 
+      }),
     }),
+
+
     updateProject: builder.mutation({
 
       query: ({ projectId, cancellationNote }) => ({
