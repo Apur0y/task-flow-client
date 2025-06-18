@@ -1,10 +1,12 @@
 import React from "react";
-import ProjectListPage from "./(components)/ProjectSection";
+
+import ProjectCards from "./(components)/ProjectCards";
 
 export default function ProjectInfo() {
   return (
     <div>
-      <ProjectListPage></ProjectListPage>
+      {/* <ProjectListPage></ProjectListPage> */}
+      <ProjectCards></ProjectCards>
     </div>
   );
 }
