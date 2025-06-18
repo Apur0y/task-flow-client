@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useSelector } from "react-redux"
-import { selectAccessToken, selectAuth } from "@/feature/auth/authSelectors"
+import { selectAuth } from "@/feature/auth/authSelectors"
 
 export function NavMain({
   
@@ -27,7 +27,7 @@ export function NavMain({
 
   
    const auth = useSelector(selectAuth);
-  const accessToken = useSelector(selectAccessToken);
+
 
 
   const [role, setRole] = useState("teamLeader")
@@ -44,7 +44,7 @@ export function NavMain({
 
   useEffect(() => {
     if(auth?.role){
-      // setRole(auth.role)
+      setRole(auth.role)
     }else{
       
     }

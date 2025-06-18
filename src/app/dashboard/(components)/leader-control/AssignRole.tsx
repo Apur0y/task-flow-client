@@ -6,8 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Team } from '../admin-control/(components)/TeamSection';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+
 import { useForm } from "react-hook-form";
 
 
@@ -46,7 +45,7 @@ export default function AssignRole() {
   const [user,setUser]=useState('')
   const [projects,setProjects]=useState<Project[]>([])
   const [teams, setTeams] = useState<Team[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+  // const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [fileteredTeam, setFilteredTeams]=useState<Team[]>([]);
 
   const auth = useSelector(selectAuth);
@@ -73,13 +72,14 @@ export default function AssignRole() {
     setFilteredTeams(getTeam);
     // const getedProject = projects.filter(p => fileteredTeam.some(t => t.teamName === p.teamName));
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
-    setFilteredProjects(getPro)
+    console.log(getPro)
+    // setFilteredProjects(getPro)
   },[teams, projects, user])
 
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
 
 
-      const { register, handleSubmit, reset } = useForm({
+      const { register, handleSubmit } = useForm({
   });
 
 
@@ -87,7 +87,7 @@ export default function AssignRole() {
     // setSelectedProject(project);
     // reset(project); // Pre-fill form
     // setOpen(true);
-    console.log(";asd")
+    console.log(";asd",project)
     const modal = document.getElementById('my_modal_2') as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
@@ -95,9 +95,8 @@ export default function AssignRole() {
   };
 
 
-
-  const [open, setOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // const [open, setOpen] = useState(false);
+  // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
 
 
@@ -111,10 +110,10 @@ export default function AssignRole() {
     if(responce){
       console.log(responce)
     }
-
-    if (!selectedProject) return;
-    // await updateProject({ id: selectedProject._id, data: formData });
-    setOpen(false);
+    //  reset()
+    // if (!selectedProject) return;
+    // // await updateProject({ id: selectedProject._id, data: formData });
+    // setOpen(false);
   };
 
   return (

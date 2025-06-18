@@ -1,23 +1,52 @@
+// redux/store/store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import { createBaseApi } from "../api/basuUrlslice";
 import authReducer from "@/feature/auth/authSlice";
+import storage from "redux-persist/lib/storage";
+import { persistReducer, persistStore } from "redux-persist";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist";
+import { combineReducers } from "redux";
 
-export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      auth: authReducer,
-      [createBaseApi.reducerPath]: createBaseApi.reducer,
-    },
-
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(createBaseApi.middleware),
-  });
+// 1. Configure persist for the auth slice
+const persistConfigAuth = {
+  key: "auth",
+  storage,
+  whitelist: ["accessToken", "userEmail", "userEmployeeId", "role"],// optionally limit what persists
 };
 
-export type AppStore = ReturnType<typeof makeStore>;
-export type RootState = ReturnType<AppStore["getState"]>;
-export type AppDispatch = AppStore["dispatch"];
+// 2. Wrap the auth reducer
+const persistedAuthReducer = persistReducer(persistConfigAuth, authReducer);
 
+// 3. Combine reducers
+const rootReducer = combineReducers({
+  auth: persistedAuthReducer,
+  [createBaseApi.reducerPath]: createBaseApi.reducer, // RTK Query reducer (no need to persist)
+});
+
+// 4. Create the store
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(createBaseApi.middleware),
+});
+
+// 5. Persistor
+export const persistor = persistStore(store);
+
+// 6. Types
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 
 // store/store.ts
