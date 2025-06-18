@@ -44,7 +44,7 @@ export default function TeamCard({ team }: { team: Team }) {
                     {/* <Image src="https://admin.pixelstrap.net/riho/assets/images/social-app/timeline-3.png" alt="" height={10} width={10} className='h-15 w-15 rounded-full bg-gray-500'></Image> */}
                     <p className='h-15 w-15 rounded-full bg-gradient-to-br from-green-700 via-green-900 to-emerald-700'></p>
                     <div className='mt-2'>
-                        <h2 className="text-md font-bold">{teamName}</h2>
+                        <h2 className="text-md font-bold">{teamName} </h2>
                         <p className="text-sm">{teamID}</p>
                     </div>
                 </div>

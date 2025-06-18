@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { FaBars, FaBell, FaSun, FaMoon } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { TAuthState } from "@/feature/auth/authSlice";
+import { Highlighter } from "lucide-react";
 
 export default function Navbar() {
   const [decoded, setDecoded] = useState<TAuthState | null>(null);
@@ -35,7 +36,8 @@ export default function Navbar() {
       {/* Left: Menu Icon */}
       <div className="flex items-center space-x-4">
         <button className="text-2xl">
-          <FaBars />
+        <Highlighter></Highlighter>
+        
         </button>
         <span className="text-lg font-semibold"> Welcome, {userName}</span>
       </div>
