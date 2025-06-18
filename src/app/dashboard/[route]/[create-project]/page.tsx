@@ -4,6 +4,7 @@ import { useCreateProjectMutation } from "@/feature/projectCreate/projectCreateS
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 type ProjectFormData = {
   projectId: string;
@@ -41,12 +42,13 @@ export default function ProjectListPage() {
   });
 
   const onSubmit = async (data: ProjectFormData) => {
-    console.log("deadline:", data.deadline);
     try {
       await createProject(data).unwrap();
+      toast.success("Project created successfully");
       console.log("Project created successfully");
       reset(); // Reset form after successful submission
     } catch (err) {
+      toast.error("Failed to create project");
       console.error("Failed to create project:", err);
     }
   };
