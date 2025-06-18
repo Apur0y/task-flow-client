@@ -33,16 +33,11 @@ export const projectSlice = createBaseApi.injectEndpoints({
       query: () => "/api/project",
     }),
     updateProject: builder.mutation({
-      query: ({ id, ...patch }) => ({
-        url: `/api/project/${id}`,
-        method: "PUT",
-        body: patch,
-      }),
-    }),
-    deleteProject: builder.mutation({
-      query: (id) => ({
-        url: `/api/project/${id}`,
-        method: "DELETE",
+
+      query: ({ projectId, cancellationNote }) => ({
+        url: `/api/project/${projectId}`,
+        method: "PATCH",
+        body: cancellationNote,
       }),
     }),
   }),
@@ -52,5 +47,5 @@ export const {
   useCreateProjectMutation,
   useGetProjectsCatchallQuery,
   useUpdateProjectMutation,
-  useDeleteProjectMutation,
+
 } = projectSlice;

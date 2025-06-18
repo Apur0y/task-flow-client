@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +48,9 @@ export function LoginForm({
       const decoded: TAuthState = jwtDecode(userToken.accessToken);
 
       if (res.data?.success) {
-        localStorage.setItem("acessToken", userToken.accessToken);
+
+        localStorage.setItem("accessToken", userToken.accessToken);
+
 
         dispatch(
           setUser({
@@ -68,16 +70,16 @@ export function LoginForm({
         (res.error as { data?: { message?: string } }).data?.message
       ) {
         toast.error(
-          (res.error as { data?: { message?: string } }).data?.message || "Login failed. Please try again."
+          (res.error as { data?: { message?: string } }).data?.message ||
+            "Login failed. Please try again."
         );
       }
       reset();
     } catch (error) {
       toast.error("Login failed. Please try again.");
-      console.log(error)
+      console.log(error);
     }
   };
-
 
   return (
     <form
