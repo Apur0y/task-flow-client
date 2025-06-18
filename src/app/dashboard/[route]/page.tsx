@@ -15,7 +15,7 @@ interface PageProps {
 }
 
 export default function Page({ params }: PageProps) {
-  const [role, setRole] = useState("")
+  const [role, setRole] = useState("admin")
   const [route, setRoute] = useState("")
    const auth = useSelector(selectAuth);
   // const accessToken = useSelector(selectAccessToken);

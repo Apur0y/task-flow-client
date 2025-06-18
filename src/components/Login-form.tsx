@@ -54,12 +54,10 @@ export function LoginForm({
 
         dispatch(
           setUser({
-            type: "TYPE_AUTH",
-            payload: {
-              userEmail: decoded?.userEmail,
-              userEmployeeId: decoded.userEmployeeId,
-              role: decoded?.role,
-            },
+            userEmail: decoded?.userEmail,
+            userEmployeeId: decoded.userEmployeeId,
+            role: decoded?.role,
+            accessToken: decoded?.accessToken,
           })
         );
         router.push("/dashboard");

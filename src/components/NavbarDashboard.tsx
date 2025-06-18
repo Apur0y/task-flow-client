@@ -46,16 +46,14 @@ export default function Navbar() {
       <div className="flex items-center space-x-4">
         <span className="text-sm font-medium">{userEmail}</span>
         {/* Notification Icon */}
-        <button className="text-xl relative">
+        {/* <button className="text-xl relative">
           <FaBell />
-          {/* Optional Notification Dot */}
           <span className="absolute top-0 right-0 bg-red-500 rounded-full w-2 h-2"></span>
         </button>
 
-        {/* Theme Toggle */}
         <button className="text-xl" onClick={toggleTheme}>
           {darkMode ? <FaSun /> : <FaMoon />}
-        </button>
+        </button> */}
 
         {/* Profile Image */}
         <Image

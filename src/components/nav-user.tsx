@@ -20,7 +20,7 @@ export function NavUser({
 
  const handleLogOut=()=>{
   logout();
-  localStorage.removeItem("accessToken");
+  // localStorage.removeItem("accessToken");
   router.push('/login')
 
  }

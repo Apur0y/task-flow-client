@@ -5,7 +5,7 @@ import Navbar from "@/components/NavbarDashboard";
 
 import { SiteHeader } from "@/components/site-header";
 import {  SidebarProvider } from "@/components/ui/sidebar";
-
+// import { Providers } from "../Provider";
 
 
 
@@ -20,7 +20,8 @@ export default function layout({
   return (
 
     <div>
-     <AuthGuard >
+      {/* <Providers> */}
+         <AuthGuard >
          <SidebarProvider
         style={
           {
@@ -44,6 +45,7 @@ export default function layout({
         </div>
       </SidebarProvider>
       </AuthGuard>
+      {/* </Providers> */}
 
      
      

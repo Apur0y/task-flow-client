@@ -30,7 +30,7 @@ export function NavMain({
   const accessToken = useSelector(selectAccessToken);
 
 
-  const [role, setRole] = useState("")
+  const [role, setRole] = useState("admin")
   const [routes, setRoutes] = useState<string[]>([])
   const [active, setActive] = useState("")
 
@@ -44,7 +44,7 @@ export function NavMain({
 
   useEffect(() => {
     if(auth?.role){
-      setRole(auth.role)
+      // setRole(auth.role)
     }else{
       
     }

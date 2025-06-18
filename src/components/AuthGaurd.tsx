@@ -11,18 +11,18 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
 
-    if (!token) {
+    // if (!token) {
 
-      router.push('/login');
-    }else{
-      setCheckedAuth(true)
-    }
+    //   router.push('/login');
+    // }else{
+    //   setCheckedAuth(true)
+    // }
   }, []); 
-    if (!checkedAuth) {
-    return <div className='min-h-screen flex justify-center items-center'>
-      Loading...
-    </div>; 
-  }
+  //   if (!checkedAuth) {
+  //   return <div className='min-h-screen flex justify-center items-center'>
+  //     Loading...
+  //   </div>; 
+  // }
 
 
   return <>{children}</>;
