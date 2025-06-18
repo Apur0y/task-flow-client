@@ -19,9 +19,17 @@ export const userCreation = createBaseApi.injectEndpoints({
         }),
            updateTeam: build.mutation({
              query: (body) => ({
-        url: '/api/user/update-user',
+        url: '/api/team',
         method: "UPDATE",
         body:body
+        
+      }),
+        }),
+             getAllTeam: build.query({
+             query: () => ({
+        url: '/api/team',
+        method: "GET",
+      
         
       }),
         }),
@@ -30,4 +38,4 @@ export const userCreation = createBaseApi.injectEndpoints({
 })
 
 
-export const { useCreateTeamMutation, useDeleteTeamMutation} = userCreation;
+export const { useGetAllTeamQuery,useCreateTeamMutation, useDeleteTeamMutation} = userCreation;

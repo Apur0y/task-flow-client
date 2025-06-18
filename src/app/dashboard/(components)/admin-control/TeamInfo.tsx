@@ -1,6 +1,7 @@
 import React from 'react'
 import TeamSection from './(components)/TeamSection'
 
+
 export default function TeamInfo() {
   return (
     <div>
@@ -9,7 +10,9 @@ export default function TeamInfo() {
           <p>Dashboard - Teams</p>
         </header>
 
+        
         <TeamSection></TeamSection>
+
      
     </div>
   )

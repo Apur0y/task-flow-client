@@ -97,6 +97,7 @@ const UserTable: FC = () => {
 
   useEffect(() => {
     if (data?.data) {
+      console.log(data.data)
       setUsers(data?.data)
       setFilteredUsers(data?.data)
     }
@@ -199,7 +200,7 @@ const UserTable: FC = () => {
 
       {/* Open the modal using document.getElementById('ID').showModal() method */}
 
-      <dialog id="my_modal_2" className="modal bg-white">
+      <dialog id="my_modal_2" className="modal bg-white ">
         <div className="modal-box w-full max-w-2xl bg-white   ">
           <h3 className="font-bold text-lg mb-4">Create New User</h3>
 
