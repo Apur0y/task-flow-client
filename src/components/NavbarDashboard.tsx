@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { FaBars, FaBell, FaSun, FaMoon } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { TAuthState } from "@/feature/auth/authSlice";
+import { Highlighter } from "lucide-react";
 
 export default function Navbar() {
   const [decoded, setDecoded] = useState<TAuthState | null>(null);
@@ -35,7 +36,8 @@ export default function Navbar() {
       {/* Left: Menu Icon */}
       <div className="flex items-center space-x-4">
         <button className="text-2xl">
-          <FaBars />
+        <Highlighter></Highlighter>
+        
         </button>
         <span className="text-lg font-semibold"> Welcome, {userName}</span>
       </div>
@@ -44,16 +46,14 @@ export default function Navbar() {
       <div className="flex items-center space-x-4">
         <span className="text-sm font-medium">{userEmail}</span>
         {/* Notification Icon */}
-        <button className="text-xl relative">
+        {/* <button className="text-xl relative">
           <FaBell />
-          {/* Optional Notification Dot */}
           <span className="absolute top-0 right-0 bg-red-500 rounded-full w-2 h-2"></span>
         </button>
 
-        {/* Theme Toggle */}
         <button className="text-xl" onClick={toggleTheme}>
           {darkMode ? <FaSun /> : <FaMoon />}
-        </button>
+        </button> */}
 
         {/* Profile Image */}
         <Image

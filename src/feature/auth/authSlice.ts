@@ -4,12 +4,14 @@ export type TAuthState = {
   userEmail: null | string;
   userEmployeeId: null | string | number;
   role: null | string;
+  accessToken:string|null
 };
 
 const initialState: TAuthState = {
   userEmail: null,
   userEmployeeId: null,
   role: null,
+  accessToken:null ,
 };
 
 const authSlice = createSlice({

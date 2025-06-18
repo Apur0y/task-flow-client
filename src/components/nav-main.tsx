@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { useSelector } from "react-redux"
+import { selectAccessToken, selectAuth } from "@/feature/auth/authSelectors"
 
 export function NavMain({
   
@@ -23,8 +25,12 @@ export function NavMain({
   }[]
 }) {
 
+  
+   const auth = useSelector(selectAuth);
+  const accessToken = useSelector(selectAccessToken);
 
-  const [role, setRole] = useState("admin")
+
+  const [role, setRole] = useState("teamLeader")
   const [routes, setRoutes] = useState<string[]>([])
   const [active, setActive] = useState("")
 
@@ -37,6 +43,11 @@ export function NavMain({
 
 
   useEffect(() => {
+    if(auth?.role){
+      // setRole(auth.role)
+    }else{
+      
+    }
 
     if (role === "admin") {
       setRoutes(adminRoutes)
@@ -49,9 +60,11 @@ export function NavMain({
 
     } else if (role === "client") {
       setRoutes(clientRoutes)
+    }else{
+      setRoutes([])
     }
 
-    setRole("admin")
+   
 
   }, [role])
 
