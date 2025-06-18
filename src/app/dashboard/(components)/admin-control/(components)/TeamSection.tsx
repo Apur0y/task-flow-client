@@ -15,6 +15,7 @@ export interface Team {
   teamLeaderEmail: string;
   teamColeaderEmail: string;
   teamMembersEmails: string[];
+  _id:string
 
 }
 
@@ -48,7 +49,7 @@ export default function TeamSection() {
 
     if (allteams?.data) {
       setTeams(allteams.data);
-      console.log(teams)
+   
     }
   }, [people?.data, allteams?.data]);
 
@@ -79,16 +80,16 @@ export default function TeamSection() {
     const res = await teamCreation(data) as { data?: any; error?: any };
 
     if (!('error' in res)) {
-      console.log(res)
+   
       toast.success("Team creation success")
       reset();
       setErrorMe("");
        (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
 
     } else {
-      console.log("Else error",res)
+    console.log("Else error",res)
       setErrorMe(res.error.data.message);
-      console.log(res.error.data.message)
+   
     }
   }
 

@@ -1,16 +1,39 @@
-import { Edit, Mail, Phone } from 'lucide-react';
+import { DeleteIcon, Edit, Mail, Phone } from 'lucide-react';
 
 import React, { useState } from 'react';
 import { Team } from './TeamSection';
+import { useDeleteTeamMutation } from '@/feature/team/teamApi';
+import toast from 'react-hot-toast';
 
 export default function TeamCard({ team }: { team: Team }) {
     const [showPhone, setShowPhone] = useState(false);
     const [showEmail, setShowEmail] = useState(false);
+    const [deleteTeam] = useDeleteTeamMutation();
 
-    const {teamName, teamLeaderEmail,teamColeaderEmail,teamMembersEmails,teamID} =team;
+
+    const {teamName, teamLeaderEmail,teamColeaderEmail,teamMembersEmails,teamID,_id} =team;
     const onlyMembers = teamMembersEmails.filter(
         (member: string) => member !== teamLeaderEmail && member !== teamColeaderEmail
     );
+
+    const handleTeamDelete=async(id:string)=>{
+        try {
+            const response = await deleteTeam(id).unwrap();
+            // Optionally, show a success message or update UI
+            console.log('Team deleted successfully:', response);
+        } catch (error) {
+            // Handle error (e.g., show error notification)
+            if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
+                // @ts-ignore
+                console.error('Failed to delete team:', error.data.message);
+                // @ts-ignore
+                toast.error(error.data.message);
+            } else {
+                console.error('Failed to delete team:', error);
+                toast.error('Failed to delete team');
+            }
+        }
+    }
 
     return (
         <div className="mx-auto  bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
@@ -27,8 +50,10 @@ export default function TeamCard({ team }: { team: Team }) {
                 </div>
 
 
-                <div>
+                <div className='flex gap-2'>
                     <button className='flex gap-1 font-semibold'><Edit></Edit> Edit</button>
+                    <button onClick={()=>handleTeamDelete(_id)} className='flex gap-1 font-semibold text-red-700 cursor-pointer'><DeleteIcon></DeleteIcon></button>
+
                 </div>
             </div>
 

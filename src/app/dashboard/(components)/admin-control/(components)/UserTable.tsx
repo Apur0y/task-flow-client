@@ -6,7 +6,7 @@ import { Calendar, Search } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import {  FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 
 interface User {
@@ -19,7 +19,7 @@ interface User {
   address: string;
   phone: string;
   photo: string;
-  _id:string
+  _id: string
 }
 
 const UserTable: FC = () => {
@@ -34,7 +34,7 @@ const UserTable: FC = () => {
       address: 'Dhaka, Bangladesh',
       phone: '017XXXXXXXX',
       photo: 'https://example.com/photo.jpg',
-      _id:""
+      _id: ""
     },
     // Add more sample users if needed
   ]);
@@ -45,6 +45,8 @@ const UserTable: FC = () => {
   const [deleteUser] = useDeleteUserMutation()
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
+  const [errorMe, setErrorMe] = useState("")
+
   const {
     register,
     handleSubmit,
@@ -53,46 +55,56 @@ const UserTable: FC = () => {
   } = useForm<User>();
 
   const onSubmit = async (data: User) => {
-  const originalDate = data.userJoiningDate; // "2025-06-08"
-  const [year, month, day] = originalDate.split('-');
-  const formattedDate = `${day}-${month}-${year}`; // "08-06-2025"
+    const originalDate = data.userJoiningDate; // "2025-06-08"
+    const [year, month, day] = originalDate.split('-');
+    const formattedDate = `${day}-${month}-${year}`; // "08-06-2025"
 
-  const formattedData = {
-    ...data,
-    userJoiningDate: formattedDate,
-  };
+    const formattedData = {
+      ...data,
+      userJoiningDate: formattedDate,
+    };
 
-    const responce = await createUser(formattedData);
+    const responce: {
+      data: any;
+      error?: undefined;
+    } | {
+      data?: undefined;
+      error: any
+    } = await createUser(formattedData);
     if ('data' in responce && responce.data) {
-        setUsers(users);
+      setUsers(users);
       toast.success("User Creation Successfull");
-    reset();
-    
+      reset();
+
 
       (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
     } else {
-      console.log(responce)
+      // setErrorMe(responce.error.data.message);
+      setErrorMe(responce?.error.data.message);
+
+
+
     }
   };
 
-  const handleUserDelete=async(id:string)=>{
-    console.log(id)
+  const handleUserDelete = async (id: string) => {
+
     const responce = await deleteUser(id);
-    if('data' in responce && responce.data){
-      console.log(responce)
+    if ('data' in responce && responce.data) {
+
       toast.success("User deleted")
     }
   }
 
-  const handleSearch=(searchInput:string)=>{
- const lowerSearch = searchInput.toLowerCase();
+  const handleSearch = (searchInput: string) => {
+    const lowerSearch = searchInput.toLowerCase();
 
-  const filtered = users.filter(user =>
-    user.userEmail.toLowerCase().includes(lowerSearch) ||
-    user.userName.toLowerCase().includes(lowerSearch)
-  );
+    const filtered = users.filter(user =>
+      user.userEmail.toLowerCase().includes(lowerSearch) ||
+      user.userName.toLowerCase().includes(lowerSearch)
+    );
 
-  setFilteredUsers(filtered);
+    setFilteredUsers(filtered);
   }
 
   useEffect(() => {
@@ -150,7 +162,7 @@ const UserTable: FC = () => {
               <th className="px-4 py-2 ">Employee ID</th>
               <th className="px-4 py-2 ">Address</th>
               <th className="px-4 py-2 ">Phone</th>
-           
+
               <th className="px-4 py-2  text-center">Actions</th>
             </tr>
           </thead>
@@ -160,34 +172,34 @@ const UserTable: FC = () => {
                 <td className="px-4 py-2 ">{index + 1}</td>
                 <td className="px-4 py-2 ">{user.userJoiningDate}</td>
                 <td className="px-4 py-2  flex gap-2">
-                   <img
+                  <img
                     src={user.photo}
                     alt=''
                     className="w-10 h-10 hidden lg:flex object-cover  bg-slate-500 rounded-full"
                   />
-                  
+
                   <p className='pt-2'>{user.userName}</p>
-                  </td>
+                </td>
                 <td className="px-4 py-2 ">{user.userEmail}</td>
                 <td className="px-4 py-2 ">{user.userRole}</td>
                 <td className="px-4 py-2 ">
-                  
+
                   {/* {user.userPassword} */}
                   <button className='text-task-primary hover:underline cursor-pointer'>Manage Password</button>
-                   
-                  </td>
+
+                </td>
                 <td className="px-4 py-2 ">{user.userEmployeeId}</td>
                 <td className="px-4 py-2 ">{user.address}</td>
                 <td className="px-4 py-2 ">{user.phone}</td>
-                
+
                 <td className="px-4 py-2  text-center space-x-2">
-                
+
                   <button className="text-task-primary hover:text-yellow-700">
                     <FaEdit />
                   </button>
                   <button
-                  onClick={()=>handleUserDelete(user._id)}
-                  className="text-red-500 hover:text-red-700">
+                    onClick={() => handleUserDelete(user._id)}
+                    className="text-red-500 hover:text-red-700">
                     <FaTrash />
                   </button>
                 </td>
@@ -228,16 +240,16 @@ const UserTable: FC = () => {
             <div>
               <label className="block text-sm font-medium">Role</label>
               <select
-              {...register('userRole', { required: 'Role is required' })}
-              className="input input-bordered bg-white border border-gray-200 w-full"
-              defaultValue=""
+                {...register('userRole', { required: 'Role is required' })}
+                className="input input-bordered bg-white border border-gray-200 w-full"
+                defaultValue=""
               >
-              <option value="" disabled>
-                Select role
-              </option>
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-              <option value="client">Client</option>
+                <option value="" disabled>
+                  Select role
+                </option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+                <option value="client">Client</option>
               </select>
               {errors.userRole && <p className="text-red-500 text-xs">{errors.userRole.message}</p>}
             </div>
@@ -301,8 +313,12 @@ const UserTable: FC = () => {
                 className="input input-bordered bg-white border border-gray-200 w-full"
               />
             </div>
+         
 
             <div className="col-span-full mt-4">
+                 <div className='flex justify-center text-red-600'>
+              {errorMe}
+            </div>
               <button type="submit" className="btn border-none bg-task-primary w-full">
                 Create User
               </button>
