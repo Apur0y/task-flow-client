@@ -2,9 +2,10 @@
 
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { selectAuth } from "@/feature/auth/authSelectors";
-import { logout } from "@/feature/auth/authSlice";
+
+import { authSlice, logout } from "@/feature/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { persistor } from "@/redux/store/store";
 
 export function NavUser({
  
@@ -15,12 +16,15 @@ export function NavUser({
     avatar: string;
   };
 }) {
-     const auth = useSelector(selectAuth);
+ 
   const router = useRouter();
+  const dispatch = useDispatch();
 
  const handleLogOut=()=>{
+  dispatch(authSlice.actions.logout());
+   persistor.purge(); 
   logout();
-  // localStorage.removeItem("accessToken");
+  localStorage.removeItem("accessToken");
   router.push('/login')
 
  }

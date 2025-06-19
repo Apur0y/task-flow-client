@@ -41,7 +41,7 @@ export interface Project {
 }
 
 
-export default function AssignRole() {
+export default function ColeaderUpdate() {
   const [user,setUser]=useState('')
   const [projects,setProjects]=useState<Project[]>([])
   const [teams, setTeams] = useState<Team[]>([])
@@ -54,7 +54,7 @@ export default function AssignRole() {
   const {data:allProjects} = useGetProjectsCatchallQuery({});
   const {data:allTeam} =useGetAllTeamQuery({})
   const [updateProject] =useUpdateProjectMutation();
-  const { register, handleSubmit,reset } = useForm({});
+   const { register, handleSubmit,reset } = useForm({});
 
 
   useEffect(()=>{
@@ -77,12 +77,23 @@ export default function AssignRole() {
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
     console.log(getPro)
     // setFilteredProjects(getPro)
+
      if (selectedProject) {
     reset({
       frontendRoleAssignedTo: selectedProject.frontendRoleAssignedTo || '',
       backendRoleAssignedTo: selectedProject.backendRoleAssignedTo || '',
       uiRoleAssignedTo: selectedProject.uiRoleAssignedTo || '',
-
+      lastUpdate: selectedProject.lastUpdate || '',
+      lastMeeting: selectedProject.lastMeeting || '',
+      projectStatus: selectedProject.projectStatus || '',
+      estimatedDelivery: selectedProject.estimatedDelivery || '',
+      rating: selectedProject.rating || '',
+      clientStatus: selectedProject.clientStatus || '',
+      figmaLink: selectedProject.figmaLink || '',
+      backendLink: selectedProject.backendLink || '',
+      liveLink: selectedProject.liveLink || '',
+      deliveryDate: selectedProject.deliveryDate || '',
+      requirementDoc: selectedProject.requirementDoc || '',
     });
   }
   },[teams, projects, user,selectedProject, reset])
@@ -90,6 +101,7 @@ export default function AssignRole() {
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
 
 
+     
 
 
       const handleEdit = (project: Project) => {
@@ -97,20 +109,16 @@ export default function AssignRole() {
     // reset(project); // Pre-fill form
     // setOpen(true);
     console.log(";asd",project)
-    
     const modal = document.getElementById('my_modal_2') as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
     }
   };
 
-
-  // const [open, setOpen] = useState(false);
-  // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-
+console.log(fileteredTeam);
   
   const onSubmit = async (formData: Partial<Project>) => {
-      console.log(formData);
+    console.log(formData)
     const cancellationNote=formData;
     const projectId= selectedProject?.projectId;
 
@@ -126,14 +134,14 @@ export default function AssignRole() {
 
   return (
     <div className='mx-9'>
-    <div className="mt-6 overflow-x-auto rounded-lg shadow-md">
+ <div className="mt-6 overflow-x-auto rounded-lg shadow-md">
       <table className="w-full border-collapse bg-white text-sm">
         <thead>
           <tr className="bg-gray-50 text-gray-700">
             <th className="border-b p-4 text-left font-semibold">Project Name</th>
             <th className="border-b p-4 text-left font-semibold">Station</th>
             <th className="border-b p-4 text-left font-semibold">Team</th>
-            <th className="border-b p-4 text-left font-semibold">Assign Role</th>
+            <th className="border-b p-4 text-left font-semibold">Update</th>
           </tr>
         </thead>
         <tbody>
@@ -167,69 +175,34 @@ export default function AssignRole() {
 
  <dialog id="my_modal_2" className="modal">
       <div className="modal-box max-w-4xl bg-white">
-        <h3 className="font-bold text-lg mb-4">Assign Role</h3>
+        <h3 className="font-bold text-lg mb-4">Update Project</h3>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-4 "
         >
-               <div >
-              <label className="block text-sm font-medium">Frontend Role Assigned To</label>
-              <select
-                {...register('frontendRoleAssignedTo', { required: 'Role is required' })}
-                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto max-h-60"
-                defaultValue=""
-              >
-                <option value="" disabled>Select leader</option>
-                {fileteredTeam.length > 0 && fileteredTeam[0].teamMembersEmails?.map((email) => (
-                  <option key={email} value={email} className='overflow-auto'>
-                    {email}
-                  </option>
-                ))}
-              </select>
-             
-
-            </div>
-
-            <div >
-              <label className="block text-sm font-medium">Backend Role Assigned To</label>
-              <select
-                {...register('backendRoleAssignedTo', { required: 'Role is required' })}
-                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto max-h-60"
-                defaultValue=""
-              >
-                <option value="" disabled>Select leader</option>
-                {fileteredTeam.length > 0 && fileteredTeam[0].teamMembersEmails?.map((email) => (
-                  <option key={email} value={email} className='overflow-auto'>
-                    {email}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-
-            <div >
-              <label className="block text-sm font-medium">UI Role Assigned To</label>
-              <select
-                {...register('uiRoleAssignedTo', { required: 'Role is required' })}
-                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto max-h-60"
-                defaultValue=""
-              >
-                <option value="" disabled>Select leader</option>
-                {fileteredTeam.length > 0 && fileteredTeam[0].teamMembersEmails?.map((email) => (
-                  <option key={email} value={email} className='overflow-auto'>
-                    {email}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-
-          {/* <input {...register('projectId')} placeholder="Project ID" className="input bg-white shadow-2xl input-bordered w-full" readOnly /> */}
           {/* <input {...register('frontendRoleAssignedTo')} placeholder="Frontend Role Assigned To" className="input bg-white shadow-2xl input-bordered w-full" />
           <input {...register('backendRoleAssignedTo')} placeholder="Backend Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('uiRoleAssignedTo')} placeholder="UI Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" />
-          */}
+          <input {...register('uiRoleAssignedTo')} placeholder="UI Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" /> */}
+          <div className=''>
+    <label htmlFor="">Last Update</label>
+          <input {...register('lastUpdate')} placeholder="Last Update" type="datetime-local" className="input bg-white shadow-lg input-bordered w-full" />
+          </div>
+
+      <div className=''>
+         <label htmlFor="">Last Meeting</label>
+          <input {...register('lastMeeting')} placeholder="Last Meeting" type="datetime-local" className="input bg-white shadow-lg input-bordered w-full" />
+
+      </div>
+          <input {...register('projectStatus')} placeholder="Project Status" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('estimatedDelivery')} placeholder="Estimated Delivery" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('rating')} placeholder="Rating" type="number" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('clientStatus')} placeholder="Client Status" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('figmaLink')} placeholder="Figma Link" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('backendLink')} placeholder="Backend Link" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('liveLink')} placeholder="Live Link" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('deliveryDate')} placeholder="Delivery Date" type="date" className="input bg-white shadow-lg input-bordered w-full" />
+          <input {...register('requirementDoc')} placeholder="Requirement Doc URL" className="input bg-white shadow-lg input-bordered w-full" />
 
           <div className="col-span-full flex justify-end mt-4">
             <button type="submit" className="btn bg-task-primary border-none">Update</button>

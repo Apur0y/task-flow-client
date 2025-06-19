@@ -41,6 +41,7 @@ export function LoginForm({
   const [login, { isLoading }] = useUserCreationMutation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+
     try {
       const res = await login(data);
       const { data: userToken } = res.data;
@@ -59,10 +60,18 @@ export function LoginForm({
               userEmail: decoded?.userEmail,
               userEmployeeId: decoded.userEmployeeId,
               role: decoded?.role,
+              accessToken: userToken.accessToken, // ✅ Send token to redux
             },
           })
-        );
-        router.push("/dashboard");
+        )
+
+        if( decoded?.role==="client"){
+           router.push("/client");
+        }else{
+       router.push("/dashboard"); 
+        }
+
+        
         toast.success("Login successful!");
       } else if (
         res?.error &&
@@ -71,7 +80,7 @@ export function LoginForm({
       ) {
         toast.error(
           (res.error as { data?: { message?: string } }).data?.message ||
-            "Login failed. Please try again."
+          "Login failed. Please try again."
         );
       }
       reset();

@@ -9,11 +9,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSelector } from "react-redux";
-import { selectAccessToken, selectAuth } from "@/feature/auth/authSelectors";
+
+} from "@/components/ui/sidebar"
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { useSelector } from "react-redux"
+import { selectAuth } from "@/feature/auth/authSelectors"
 
 export function NavMain({}: {
   items: {
@@ -22,23 +23,35 @@ export function NavMain({}: {
     icon?: Icon;
   }[];
 }) {
-  const auth = useSelector(selectAuth);
-  const accessToken = useSelector(selectAccessToken);
+
+
+  
+   const auth = useSelector(selectAuth);
+
 
   const [role, setRole] = useState("admin");
   const [routes, setRoutes] = useState<string[]>([]);
   const [active, setActive] = useState("");
 
-  const adminRoutes = ["Users", "Projects", "Teams"];
-  const leaderRoutes = ["Role Assign", "Project Update"];
-  const coLeaderRoutes = ["Project Update"];
-  const memberRoutes = ["View Resource"];
-  const clientRoutes = ["Payment"];
+
+  const [role, setRole] = useState("teamLeader")
+  const [routes, setRoutes] = useState<string[]>([])
+  const [active, setActive] = useState("")
+
+
+  const adminRoutes = ["Users", "Projects", "Teams"]
+  const leaderRoutes = ["My Projects","Role Assign", "Project Update","Team Chat"]
+  const coLeaderRoutes = ["My Projects","Project Update","Team Chat"]
+  const memberRoutes = ["My Projects","View Resource","Team Chat"]
+  const clientRoutes = ["Payment"]
+
 
   useEffect(() => {
-    if (auth?.role) {
-      // setRole(auth.role)
-    } else {
+    if(auth?.role){
+      setRole(auth.role)
+    }else{
+      
+
     }
 
     if (role === "admin") {
@@ -83,11 +96,11 @@ export function NavMain({}: {
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
                 <Link
-                  className={`w-full ${active === item ? "bg-white rounded-lg" : ""}`}
+                  className={`w-full ${active === item ? "bg-white rounded-lg text-black" : "text-white"} hover:text-black`}
                   href={`/dashboard/${item}`}
                   onClick={() => setActive(item)}
                 >
-                  <div className="w-full py-3 px-2 rounded-lg  text-left">
+                  <div className="w-full py-3 px-2 rounded-lg  font-medium text-left">
                     {item}
                   </div>
                 </Link>
