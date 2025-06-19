@@ -70,7 +70,12 @@ type DetailData = {
 };
 
 export default function ProjectCards() {
-  const { data: projects, refetch } = useGetProjectsCatchallQuery("un");
+  const {
+    data: projects,
+    refetch,
+    isLoading,
+    isError,
+  } = useGetProjectsCatchallQuery("un");
   const [activeTab, setActiveTab] = useState("all");
   const [cancelProjectId, setCancelProjectId] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<DetailData | null>(
@@ -286,7 +291,13 @@ export default function ProjectCards() {
       {/* Project Cards Grid */}
       <div className="p-4 bg-white rounded-md shadow-md">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredProjects.length > 0 ? (
+          {isLoading ? (
+            <p className="text-gray-500 text-lg">Loading projects...</p>
+          ) : isError ? (
+            <p className="text-red-500 text-lg">
+              Error loading projects. Please try again.
+            </p>
+          ) : filteredProjects.length > 0 ? (
             filteredProjects.map((project: Project) => (
               <div
                 key={project.projectId}
