@@ -40,8 +40,9 @@ export default function ProjectListPage() {
       estimatedDelivery: "thisWeek",
     },
   });
-
+  //Handles form submission
   const onSubmit = async (data: ProjectFormData) => {
+    console.log("Form data submitted:", data);
     try {
       await createProject(data).unwrap();
       toast.success("Project created successfully");

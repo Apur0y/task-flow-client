@@ -1,73 +1,60 @@
-"use client"
+"use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { useSelector } from "react-redux"
-import { selectAccessToken, selectAuth } from "@/feature/auth/authSelectors"
+} from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { selectAccessToken, selectAuth } from "@/feature/auth/authSelectors";
 
-export function NavMain({
-  
-}: {
+export function NavMain({}: {
   items: {
-    title: string
-    url: string
-    icon?: Icon
-  }[]
+    title: string;
+    url: string;
+    icon?: Icon;
+  }[];
 }) {
-
-  
-   const auth = useSelector(selectAuth);
+  const auth = useSelector(selectAuth);
   const accessToken = useSelector(selectAccessToken);
 
+  const [role, setRole] = useState("admin");
+  const [routes, setRoutes] = useState<string[]>([]);
+  const [active, setActive] = useState("");
 
-  const [role, setRole] = useState("teamLeader")
-  const [routes, setRoutes] = useState<string[]>([])
-  const [active, setActive] = useState("")
-
-
-  const adminRoutes = ["Users", "Projects", "Teams"]
-  const leaderRoutes = ["Role Assign", "Project Update"]
-  const coLeaderRoutes = ["Project Update"]
-  const memberRoutes = ["View Resource"]
-  const clientRoutes = ["Payment"]
-
+  const adminRoutes = ["Users", "Projects", "Teams"];
+  const leaderRoutes = ["Role Assign", "Project Update"];
+  const coLeaderRoutes = ["Project Update"];
+  const memberRoutes = ["View Resource"];
+  const clientRoutes = ["Payment"];
 
   useEffect(() => {
-    if(auth?.role){
+    if (auth?.role) {
       // setRole(auth.role)
-    }else{
-      
+    } else {
     }
 
     if (role === "admin") {
-      setRoutes(adminRoutes)
+      setRoutes(adminRoutes);
     } else if (role === "teamLeader") {
-      setRoutes(leaderRoutes)
+      setRoutes(leaderRoutes);
     } else if (role === "teamColeader") {
-      setRoutes(coLeaderRoutes)
+      setRoutes(coLeaderRoutes);
     } else if (role === "teamMember") {
-      setRoutes(memberRoutes)
-
+      setRoutes(memberRoutes);
     } else if (role === "client") {
-      setRoutes(clientRoutes)
-    }else{
-      setRoutes([])
+      setRoutes(clientRoutes);
+    } else {
+      setRoutes([]);
     }
-
-   
-
-  }, [role])
-
+  }, [role]);
 
   return (
     <SidebarGroup className="bg-task-primary">
@@ -104,12 +91,11 @@ export function NavMain({
                     {item}
                   </div>
                 </Link>
-
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }
