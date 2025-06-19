@@ -6,8 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Team } from '../admin-control/(components)/TeamSection';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+
 import { useForm } from "react-hook-form";
 
 
@@ -46,7 +45,7 @@ export default function AssignRole() {
   const [user,setUser]=useState('')
   const [projects,setProjects]=useState<Project[]>([])
   const [teams, setTeams] = useState<Team[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
+  // const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [fileteredTeam, setFilteredTeams]=useState<Team[]>([]);
 
   const auth = useSelector(selectAuth);
@@ -73,13 +72,14 @@ export default function AssignRole() {
     setFilteredTeams(getTeam);
     // const getedProject = projects.filter(p => fileteredTeam.some(t => t.teamName === p.teamName));
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
-    setFilteredProjects(getPro)
+    console.log(getPro)
+    // setFilteredProjects(getPro)
   },[teams, projects, user])
 
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
 
 
-      const { register, handleSubmit, reset } = useForm({
+      const { register, handleSubmit } = useForm({
   });
 
 
@@ -87,7 +87,7 @@ export default function AssignRole() {
     // setSelectedProject(project);
     // reset(project); // Pre-fill form
     // setOpen(true);
-    console.log(";asd")
+    console.log(";asd",project)
     const modal = document.getElementById('my_modal_2') as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
@@ -95,9 +95,8 @@ export default function AssignRole() {
   };
 
 
-
-  const [open, setOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // const [open, setOpen] = useState(false);
+  // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
 
 
@@ -111,45 +110,56 @@ export default function AssignRole() {
     if(responce){
       console.log(responce)
     }
-
-    if (!selectedProject) return;
-    // await updateProject({ id: selectedProject._id, data: formData });
-    setOpen(false);
+    //  reset()
+    // if (!selectedProject) return;
+    // // await updateProject({ id: selectedProject._id, data: formData });
+    // setOpen(false);
   };
 
   return (
-    <div>
-       <table className="w-full border mt-4">
+    <div className='mx-9'>
+    <div className="mt-6 overflow-x-auto rounded-lg shadow-md">
+      <table className="w-full border-collapse bg-white text-sm">
         <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Project Name</th>
-            <th className="border p-2">Station</th>
-            <th className="border p-2">Team</th>
-            <th className="border p-2">Action</th>
+          <tr className="bg-gray-50 text-gray-700">
+            <th className="border-b p-4 text-left font-semibold">Project Name</th>
+            <th className="border-b p-4 text-left font-semibold">Station</th>
+            <th className="border-b p-4 text-left font-semibold">Team</th>
+            <th className="border-b p-4 text-left font-semibold">Assign Role</th>
           </tr>
         </thead>
         <tbody>
-      {getPro.map((project) => (
-            <tr key={project._id}>
-              <td className="border p-2">{project.projectName}</td>
-              <td className="border p-2">{project.station}</td>
-              <td className="border p-2">{project.teamName ?? "N/A"}</td>
-              <td className="border p-2">
-                <Button variant="outline" onClick={() => handleEdit(project)}>
+          {getPro.map((project) => (
+            <tr
+              key={project._id}
+              className="hover:bg-gray-50 transition-colors duration-200"
+            >
+              <td className="border-b p-4 text-gray-800">{project.projectName}</td>
+              <td className="border-b p-4 text-gray-800">{project.station}</td>
+              <td className="border-b p-4 text-gray-800">
+                {project.teamName ?? "N/A"}
+              </td>
+              <td className="border-b p-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleEdit(project)}
+                  className="bg-gray-200 border-none"
+                >
                   Update
                 </Button>
               </td>
             </tr>
           ))}
-              </tbody>
+        </tbody>
       </table>
-
+    </div>
 
      {/* Open the modal using document.getElementById('ID').showModal() method */}
 
  <dialog id="my_modal_2" className="modal">
       <div className="modal-box max-w-4xl bg-white">
-        <h3 className="font-bold text-lg mb-4">Update Project</h3>
+        <h3 className="font-bold text-lg mb-4">Assign Role</h3>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -158,28 +168,10 @@ export default function AssignRole() {
           <input {...register('frontendRoleAssignedTo')} placeholder="Frontend Role Assigned To" className="input bg-white shadow-2xl input-bordered w-full" />
           <input {...register('backendRoleAssignedTo')} placeholder="Backend Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" />
           <input {...register('uiRoleAssignedTo')} placeholder="UI Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" />
-          <div className='flex'>
-    <label htmlFor="">Last Update</label>
-          <input {...register('lastUpdate')} placeholder="Last Update" type="datetime-local" className="input bg-white shadow-lg input-bordered w-full" />
-          </div>
-
-      <div className='flex'>
-         <label htmlFor="">Last Meeting</label>
-          <input {...register('lastMeeting')} placeholder="Last Meeting" type="datetime-local" className="input bg-white shadow-lg input-bordered w-full" />
-
-      </div>
-          <input {...register('projectStatus')} placeholder="Project Status" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('estimatedDelivery')} placeholder="Estimated Delivery" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('rating')} placeholder="Rating" type="number" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('clientStatus')} placeholder="Client Status" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('figmaLink')} placeholder="Figma Link" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('backendLink')} placeholder="Backend Link" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('liveLink')} placeholder="Live Link" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('deliveryDate')} placeholder="Delivery Date" type="date" className="input bg-white shadow-lg input-bordered w-full" />
-          <input {...register('requirementDoc')} placeholder="Requirement Doc URL" className="input bg-white shadow-lg input-bordered w-full" />
+         
 
           <div className="col-span-full flex justify-end mt-4">
-            <button type="submit" className="btn btn-primary">Update</button>
+            <button type="submit" className="btn bg-task-primary border-none">Update</button>
           </div>
         </form>
       </div>

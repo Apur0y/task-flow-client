@@ -6,7 +6,7 @@ import TeamInfo from '../(components)/admin-control/TeamInfo';
 import AssignRole from '../(components)/leader-control/AssignRole'
 import ProjectUpdate from '../(components)/leader-control/ProjectUpdate'
 import { useSelector } from 'react-redux';
-import { selectAccessToken, selectAuth } from '@/feature/auth/authSelectors';
+import {  selectAuth } from '@/feature/auth/authSelectors';
 
 interface PageProps {
   params: Promise<{
@@ -19,6 +19,7 @@ export default function Page({ params }: PageProps) {
   const [route, setRoute] = useState("")
    const auth = useSelector(selectAuth);
   // const accessToken = useSelector(selectAccessToken);
+  
 
   useEffect(() => {
        if(auth?.role){

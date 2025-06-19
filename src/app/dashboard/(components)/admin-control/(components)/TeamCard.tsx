@@ -24,10 +24,10 @@ export default function TeamCard({ team }: { team: Team }) {
         } catch (error) {
             // Handle error (e.g., show error notification)
             if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
-                // @ts-ignore
+                
                 console.error('Failed to delete team:', error.data.message);
-                // @ts-ignore
-                toast.error(error.data.message);
+            
+                toast.error(String(error.data.message || 'Failed to delete team'));
             } else {
                 console.error('Failed to delete team:', error);
                 toast.error('Failed to delete team');

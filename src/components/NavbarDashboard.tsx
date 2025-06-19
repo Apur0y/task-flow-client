@@ -3,14 +3,14 @@ import { useGetSignleUserQuery } from "@/feature/auth/authCredentialSlice";
 import { useAppSelector } from "@/lib/hooks";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { FaBars, FaBell, FaSun, FaMoon } from "react-icons/fa";
+// import { FaBars, FaBell, FaSun, FaMoon } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { TAuthState } from "@/feature/auth/authSlice";
 import { Highlighter } from "lucide-react";
 
 export default function Navbar() {
   const [decoded, setDecoded] = useState<TAuthState | null>(null);
-  const [darkMode, setDarkMode] = useState(false);
+  // const [darkMode, setDarkMode] = useState(false);
 
   const user = useAppSelector((state) => state.auth);
 
@@ -27,9 +27,9 @@ export default function Navbar() {
     }
   }, []);
 
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
+  // const toggleTheme = () => {
+  //   setDarkMode(!darkMode);
+  // };
 
   return (
     <div className="w-full border-b bg-white dark:bg-gray-800 dark:text-white px-4 py-2 flex items-center justify-between">

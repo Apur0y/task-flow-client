@@ -19,11 +19,13 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { userEmail, userEmployeeId, role } = action.payload.payload;
-      state.userEmail = userEmail;
-      state.userEmployeeId = userEmployeeId;
-      state.role = role;
-    },
+  const { userEmail, userEmployeeId, role, accessToken } = action.payload.payload;
+  state.userEmail = userEmail;
+  state.userEmployeeId = userEmployeeId;
+  state.role = role;
+  state.accessToken = accessToken; 
+},
+
     logout: (state) => {
       state.userEmail = null;
       state.userEmployeeId = null;
