@@ -7,6 +7,8 @@ import AssignRole from '../(components)/leader-control/AssignRole'
 import ProjectUpdate from '../(components)/leader-control/ProjectUpdate'
 import { useSelector } from 'react-redux';
 import {  selectAuth } from '@/feature/auth/authSelectors';
+import MyProjects from '../(components)/MyProjects';
+import ColeaderUpdate from '../(components)/coleader-control/ColeaderUpdate';
 
 interface PageProps {
   params: Promise<{
@@ -45,15 +47,38 @@ export default function Page({ params }: PageProps) {
     ? <div><TeamInfo /></div>
     : null;
 
+
   const leaderRoutes = route === "Role Assign" && role === "teamLeader"
     ? <div><AssignRole /></div>
     : route === "Project Update" && role === "teamLeader"
     ? <div><ProjectUpdate /></div>
+    : route === "My Projects" && role === "teamLeader"
+    ?<div><MyProjects /></div>
     : null;
+
+
+  const coleaderRoutes = route === "Project Update" && role === "teamColeader"
+    ? <div><ColeaderUpdate /></div>
+    : route === "Project Update" && role === "teamLeader"
+    ? <div><ProjectUpdate /></div>
+    : route === "My Projects" && role === "teamColeader"
+    ?<div><MyProjects /></div>
+    : null;
+
+
+  const memberRoutes = route === "Role Assign" && role === "teamLeader"
+    ? <div><AssignRole /></div>
+    : route === "Project Update" && role === "teamLeader"
+    ? <div><ProjectUpdate /></div>
+    : route === "My Projects" && role === "teamMember"
+    ?<div><MyProjects /></div>
+    : null;
+
+
 
   return (
     <div>
-      {adminRoutes || leaderRoutes}
+      {adminRoutes || leaderRoutes || coleaderRoutes || memberRoutes }
     </div>
   )
 }

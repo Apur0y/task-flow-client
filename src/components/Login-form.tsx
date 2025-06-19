@@ -41,7 +41,7 @@ export function LoginForm({
   const [login, { isLoading }] = useUserCreationMutation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data,"My login info")
+
     try {
       const res = await login(data);
       const { data: userToken } = res.data;
@@ -65,9 +65,13 @@ export function LoginForm({
           })
         )
 
-        
+        if( decoded?.role==="client"){
+           router.push("/client");
+        }else{
+       router.push("/dashboard"); 
+        }
 
-        router.push("/dashboard");
+        
         toast.success("Login successful!");
       } else if (
         res?.error &&
