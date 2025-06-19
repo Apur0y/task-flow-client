@@ -938,10 +938,10 @@ export default function ProjectCards() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Tabs */}
       <h2 className="text-2xl font-semibold my-4">Project List</h2>
-      <div className="bg-white p-2 rounded-md mb-6 flex flex-wrap justify-between items-center">
+      <div className="bg-white  border border-gray-200 p-2 rounded-md mb-6 flex flex-wrap justify-between items-center">
         <div className="flex flex-wrap space-y-2 space-x-2 md:space-x-4 text- overflow-x-auto">
           {[
             "all",
@@ -975,7 +975,7 @@ export default function ProjectCards() {
       </div>
 
       {/* Project Cards Grid */}
-      <div className="p-4 bg-white rounded-md shadow-md">
+      <div className="">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           initial="hidden"
@@ -994,7 +994,7 @@ export default function ProjectCards() {
             filteredProjects.map((project: Project) => (
               <motion.div
                 key={project.projectId}
-                className="bg-gradient-to-br from-blue-50 to-white shadow-xl rounded-xl p-6 border border-gray-200"
+                className="bg-gradient-to-br from-blue-50 to-white shadow-md rounded-xl p-6 border border-gray-200"
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
@@ -1003,14 +1003,29 @@ export default function ProjectCards() {
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-800 bg-blue-100 px-3 py-1 rounded-full">
+                    <h3 className=" text-md md:text-xl font-bold text-gray-800 bg-blue-100 px-3 py-1 w-fit rounded-full">
                       {project.projectName}
                     </h3>
-                    <p className="text-gray-600 text-sm mt-1 break-words overflow-hidden line-clamp-3">
+                    <p className="text-gray-600 text-md my-2 break-words overflow-hidden line-clamp-3">
                       {project.projectDescription}
                     </p>
-                    <p className="text-gray-500 text-sm mt-1">
-                      {project.estimatedDelivery}
+                    <div className="space-y-2 ">
+                      <p className="text-gray-700 text-md">
+                        <span className="text-md ">ID:</span>{" "}
+                        {project.projectId}
+                      </p>
+
+                      <p className="text-gray-500 text-md">
+                        <span className="text-md">Deadline:</span>{" "}
+                        {new Date(project.deadline).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <p className="text-gray-500 text-md mt-2">
+                      Delivery: {project.estimatedDelivery}
+                    </p>
+                    <p className="text-gray-700 text-md mt-2">
+                      <span className="text-md ">Value:</span> $
+                      {project.projectValue.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex space-x-2">
