@@ -30,7 +30,7 @@ const recentActivities = [
 
 export default function DashboardOverview() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mx-7 mt-3">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {stats.map((stat) => (
