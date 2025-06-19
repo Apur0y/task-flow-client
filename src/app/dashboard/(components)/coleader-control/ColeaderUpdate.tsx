@@ -107,9 +107,6 @@ export default function ColeaderUpdate() {
 
       const handleEdit = (project: Project) => {
     setSelectedProject(project);
-    // reset(project); // Pre-fill form
-    // setOpen(true);
-    console.log(";asd",project)
     const modal = document.getElementById('my_modal_2') as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();

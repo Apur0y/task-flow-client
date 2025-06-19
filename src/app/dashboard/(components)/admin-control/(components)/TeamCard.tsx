@@ -1,9 +1,11 @@
 import { DeleteIcon, Mail, Move, Phone } from 'lucide-react';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Team } from './TeamSection';
 import { useDeleteTeamMutation, useGetAllTeamQuery, useMoveMemberMutation } from '@/feature/team/teamApi';
 import toast from 'react-hot-toast';
+import { useGetProjectsCatchallQuery } from '@/feature/projectCreate/projectCreateSlice';
+import { Project } from '../../MyProjects';
 // import { useForm } from 'react-hook-form';
 
 export default function TeamCard({ team }: { team: Team }) {
@@ -11,21 +13,13 @@ export default function TeamCard({ team }: { team: Team }) {
     const [showEmail, setShowEmail] = useState(false);
     const [deleteTeam] = useDeleteTeamMutation();
     const [newTeam, setNewTeam] = useState("");
-    const [moveMember, setMoveMember] = useState("")
+    const [moveMember, setMoveMember] = useState("ol")
     const { data: allteams } = useGetAllTeamQuery({})
     const [moveUser] = useMoveMemberMutation();
-    //      const {
-    //     register,
-    //     handleSubmit,
-    //     reset,
-    //     formState: { errors }
-    //   } = useForm<Team>();
+    const { data: allProjects } = useGetProjectsCatchallQuery({});
+    const [getProjects, setProjects] = useState<Project[]>([])
 
-    //   useEffect(() => {
-    //     if (team) {
-    //       reset(team); // Pre-fill with team data
-    //     }
-    //   }, [team, reset]);
+
 
     const { teamName, teamLeaderEmail, teamColeaderEmail, teamMembersEmails, teamID, _id } = team;
     const onlyMembers = teamMembersEmails.filter(
@@ -51,32 +45,63 @@ export default function TeamCard({ team }: { team: Team }) {
         }
     }
 
+    useEffect(() => {
+        if (allProjects?.data) {
+            setProjects(allProjects.data)
+        }
+    }, [allProjects?.data])
 
-    // const handleteamEdit = (id:string) => {
-    //     console.log(id);
-    //     (document.getElementById('my_modal_2') as HTMLDialogElement)?.showModal();
-    // }
 
 
+    const getTeamStats = (projects: Project[], teamName: string) => {
+        const teamProjects = projects.filter(project => project.teamName === teamName);
 
-    // const onSubmit = (data: Team) => {
-    //     console.log(data,"My data team")
-    //     console.log("first");
-    // };
+        const completed = teamProjects.filter(p => p.projectStatus === 'Completed').length;
+        const running = teamProjects.filter(p => p.projectStatus === 'Running').length;
 
+        const totalEarnings = teamProjects
+            .filter(p => p.projectStatus === 'Completed') // only completed projects are counted as earnings
+            .reduce((sum, p) => sum + (p.projectValue || 0), 0);
+
+        return {
+            completed,
+            running,
+            totalEarnings,
+        };
+    };
+
+    const { completed, running, totalEarnings } = getTeamStats(getProjects, teamName);
+   
 
     const handleMoveMember = (member: string) => {
-        console.log(member)
+     console.log(member)
         setMoveMember(member);
-        (document.getElementById('my_modal_6') as HTMLDialogElement)?.showModal();
+     console.log(moveMember)
+    const modal = document.getElementById('my_modal_3') as HTMLDialogElement | null;
+//  console.log(moveMember,"Underr")
+      if (modal) {
+
+        //  console.log(moveMember,"In the modak")
+      modal.showModal();
+
+    }
+    
     }
 
+//     useEffect(() => {
+//   if (moveMember) {
+//     const modal = document.getElementById('my_modal_2') as HTMLDialogElement;
+//     if (modal) modal.showModal();
+//   }
+// }, [moveMember]);
+
+
+
     const handleMove = async () => {
-        console.log(moveMember, newTeam)
         try {
-            const response = await moveUser({ memberEmail: moveMember,toTeamName:newTeam }).unwrap();
+            const response = await moveUser({ memberEmail: moveMember, toTeamName:newTeam }).unwrap();
             console.log(newTeam, "My team", moveMember);
-            if(response){
+            if (response) {
                 console.log(response)
             }
         } catch (error) {
@@ -106,20 +131,21 @@ export default function TeamCard({ team }: { team: Team }) {
                     <DeleteIcon />
                 </button>
             </div>
+        
 
             {/* Stats Section */}
             <div className="grid grid-cols-2 md:grid-cols-3 divide-x border-b text-center text-sm bg-gray-50">
                 <div className="p-4">
                     <p className="text-gray-500">Completed</p>
-                    <p className="text-lg font-bold text-teal-700">12</p>
+                    <p className="text-lg font-bold text-teal-700">{completed}</p>
                 </div>
                 <div className="p-4">
                     <p className="text-gray-500">Running</p>
-                    <p className="text-lg font-bold text-indigo-600">3</p>
+                    <p className="text-lg font-bold text-indigo-600">{running}</p>
                 </div>
                 <div className="p-4">
                     <p className="text-gray-500">Earnings</p>
-                    <p className="text-lg font-bold text-green-600">$15,000</p>
+                    <p className="text-lg font-bold text-green-600">{totalEarnings}</p>
                 </div>
             </div>
 
@@ -161,59 +187,61 @@ export default function TeamCard({ team }: { team: Team }) {
                     <span>taskflow@mail.com</span>
                 </div>
             </div>
+                <p>{moveMember}</p>
 
             {/* Open the modal using document.getElementById('ID').showModal() method */}
             {/* <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>open modal</button> */}
-        <dialog id="my_modal_6" className="modal">
-  <div className="modal-box bg-white rounded-md shadow-lg max-w-md w-full">
-    <h3 className="text-xl font-semibold text-gray-800 mb-4">Move Team Member</h3>
+        
+        
+            <dialog id="my_modal_3" className="modal">
+                <div className="modal-box bg-white rounded-md shadow-lg max-w-md w-full">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Move Team Member</h3>
 
-    {/* Member to move */}
-    <div className="mb-4">
-      <p className="text-sm text-gray-500 mb-1">Member to move:</p>
-      <div className="px-3 py-2 border rounded-md bg-gray-50 text-gray-700">
-        {moveMember}
-      </div>
-    </div>
+                    {/* Member to move */}
+                    <div className="mb-4">
+                        <p className="text-sm text-gray-500 mb-1">Member to move:</p>
+                        <div className="px-3 py-2 border rounded-md bg-gray-50 text-gray-700">
+                            {moveMember}
+                        </div>
+                    </div>
 
-    {/* Select new team */}
-    <div className="mb-6">
-      <p className="text-sm text-gray-500 mb-2">Move to team:</p>
-      <div className="grid gap-2 max-h-40 overflow-auto">
-        {allteams?.data.map((team: Team) => (
-          <button
-            key={team.teamID}
-            onClick={() => setNewTeam(team.teamName)}
-            className={`px-4 py-2 rounded-md border text-left hover:bg-gray-100 ${
-              newTeam === team.teamName ? 'bg-gray-200 font-semibold' : ''
-            }`}
-          >
-            {team.teamName}
-          </button>
-        ))}
-      </div>
-    </div>
+                    {/* Select new team */}
+                    <div className="mb-6">
+                        <p className="text-sm text-gray-500 mb-2">Move to team:</p>
+                        <div className="grid gap-2 max-h-40 overflow-auto">
+                            {allteams?.data.map((team: Team) => (
+                                <button
+                                    key={team.teamID}
+                                    onClick={() => setNewTeam(team.teamName)}
+                                    className={`px-4 py-2 rounded-md border text-left hover:bg-gray-100 ${newTeam === team.teamName ? 'bg-gray-200 font-semibold' : ''
+                                        }`}
+                                >
+                                    {team.teamName}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
-    {/* Action buttons */}
-    <div className="flex justify-end gap-2">
-      <form method="dialog">
-        <button className="btn border-none bg-gray-400">Cancel</button>
-      </form>
-      <button
-      type='button'
-        onClick={handleMove}
-        className="btn hover:bg-task-primary border-none"
-      >
-        Move
-      </button>
-    </div>
-  </div>
+                    {/* Action buttons */}
+                    <div className="flex justify-end gap-2">
+                        <form method="dialog">
+                            <button className="btn border-none bg-gray-400">Cancel</button>
+                        </form>
+                        <button
+                            type='button'
+                            onClick={handleMove}
+                            className="btn hover:bg-task-primary border-none"
+                        >
+                            Move
+                        </button>
+                    </div>
+                </div>
 
-  {/* Modal backdrop */}
-  <form method="dialog" className="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+                {/* Modal backdrop */}
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
 
 
 
