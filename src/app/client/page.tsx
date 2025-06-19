@@ -11,6 +11,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { loadStripe } from "@stripe/stripe-js";
+import { motion } from "framer-motion";
 
 const stripePromise = loadStripe("pk_test_your_publishable_key_here"); // Replace with your actual Stripe publishable key
 
@@ -86,6 +87,13 @@ export default function ClientProjects() {
     }
   };
 
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hover: { scale: 1.05, transition: { duration: 0.3 } },
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-blue-200 pb-2">
@@ -100,19 +108,23 @@ export default function ClientProjects() {
           </p>
         ) : clientProjects.length > 0 ? (
           clientProjects.map((project: Project) => (
-            <div
+            <motion.div
               key={project.projectId}
-              className="bg-gradient-to-br from-blue-50 to-white shadow-md rounded-xl p-6 hover:shadow-2xl transition-all duration-300 border border-gray-200 transform hover:-translate-y-2"
+              className="bg-gradient-to-br from-blue-50 to-white shadow-xl rounded-xl p-6 border border-gray-200"
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
               style={{ minHeight: "250px" }}
             >
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl font-bold text-gray-800 bg-blue-100 px-3 py-1 rounded-full">
+                <h3 className="text-md md:text-2xl font-bold text-gray-800 bg-blue-100 px-3 py-1 rounded-full">
                   {project.projectName}
                 </h3>
                 <span
                   className={`text-sm font-semibold px-2 py-1 rounded-full ${
                     project.projectStatus.toLowerCase() === "cancelled"
-                      ? "bg-red-100 text-red-500"
+                      ? "bg-red-100 text-red-600"
                       : "bg-green-100 text-green-600"
                   }`}
                 >
@@ -159,7 +171,7 @@ export default function ClientProjects() {
                   Pay
                 </Button>
               </div>
-            </div>
+            </motion.div>
           ))
         ) : (
           <p className="text-gray-500 text-lg">
