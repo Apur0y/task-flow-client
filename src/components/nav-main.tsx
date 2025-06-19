@@ -9,12 +9,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-
-} from "@/components/ui/sidebar"
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { useSelector } from "react-redux"
-import { selectAuth } from "@/feature/auth/authSelectors"
+} from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { selectAuth } from "@/feature/auth/authSelectors";
 
 export function NavMain({}: {
   items: {
@@ -23,35 +22,27 @@ export function NavMain({}: {
     icon?: Icon;
   }[];
 }) {
+  const auth = useSelector(selectAuth);
 
-
-  
-   const auth = useSelector(selectAuth);
-
-
-  const [role, setRole] = useState("admin");
+  const [role, setRole] = useState("");
   const [routes, setRoutes] = useState<string[]>([]);
   const [active, setActive] = useState("");
 
-
-  const [role, setRole] = useState("teamLeader")
-  const [routes, setRoutes] = useState<string[]>([])
-  const [active, setActive] = useState("")
-
-
-  const adminRoutes = ["Users", "Projects", "Teams"]
-  const leaderRoutes = ["My Projects","Role Assign", "Project Update","Team Chat"]
-  const coLeaderRoutes = ["My Projects","Project Update","Team Chat"]
-  const memberRoutes = ["My Projects","View Resource","Team Chat"]
-  const clientRoutes = ["Payment"]
-
+  const adminRoutes = ["Users", "Projects", "Teams"];
+  const leaderRoutes = [
+    "My Projects",
+    "Role Assign",
+    "Project Update",
+    "Team Chat",
+  ];
+  const coLeaderRoutes = ["My Projects", "Project Update", "Team Chat"];
+  const memberRoutes = ["My Projects", "View Resource", "Team Chat"];
+  const clientRoutes = ["Payment"];
 
   useEffect(() => {
-    if(auth?.role){
-      setRole(auth.role)
-    }else{
-      
-
+    if (auth?.role) {
+      setRole(auth.role);
+    } else {
     }
 
     if (role === "admin") {
