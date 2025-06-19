@@ -41,6 +41,7 @@ export function LoginForm({
   const [login, { isLoading }] = useUserCreationMutation();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log(data,"My login info")
     try {
       const res = await login(data);
       const { data: userToken } = res.data;

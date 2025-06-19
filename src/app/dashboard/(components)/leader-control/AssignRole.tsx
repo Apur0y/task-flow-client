@@ -47,11 +47,14 @@ export default function AssignRole() {
   const [teams, setTeams] = useState<Team[]>([])
   // const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [fileteredTeam, setFilteredTeams]=useState<Team[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
 
   const auth = useSelector(selectAuth);
   const {data:allProjects} = useGetProjectsCatchallQuery({});
   const {data:allTeam} =useGetAllTeamQuery({})
   const [updateProject] =useUpdateProjectMutation();
+  const { register, handleSubmit,reset } = useForm({});
 
 
   useEffect(()=>{
@@ -74,20 +77,27 @@ export default function AssignRole() {
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
     console.log(getPro)
     // setFilteredProjects(getPro)
-  },[teams, projects, user])
+     if (selectedProject) {
+    reset({
+      frontendRoleAssignedTo: selectedProject.frontendRoleAssignedTo || '',
+      backendRoleAssignedTo: selectedProject.backendRoleAssignedTo || '',
+      uiRoleAssignedTo: selectedProject.uiRoleAssignedTo || '',
+      projectId: selectedProject.projectId || '',
+    });
+  }
+  },[teams, projects, user,selectedProject, reset])
 
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
 
 
-      const { register, handleSubmit } = useForm({
-  });
 
 
       const handleEdit = (project: Project) => {
-    // setSelectedProject(project);
+    setSelectedProject(project);
     // reset(project); // Pre-fill form
     // setOpen(true);
     console.log(";asd",project)
+    
     const modal = document.getElementById('my_modal_2') as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
@@ -99,12 +109,12 @@ export default function AssignRole() {
   // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
 
-
+console.log(fileteredTeam);
   
   const onSubmit = async (formData: Partial<Project>) => {
-    console.log(formData)
+      console.log(formData);
     const cancellationNote=formData;
-    const projectId= 'PRJ0113';
+    const projectId= selectedProject?.projectId;
 
     const responce = await updateProject({ projectId, cancellationNote }).unwrap();
     if(responce){
@@ -165,10 +175,63 @@ export default function AssignRole() {
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-4 "
         >
-          <input {...register('frontendRoleAssignedTo')} placeholder="Frontend Role Assigned To" className="input bg-white shadow-2xl input-bordered w-full" />
+               <div >
+              <label className="block text-sm font-medium">Frontend Role Assigned To</label>
+              <select
+                {...register('frontendRoleAssignedTo', { required: 'Role is required' })}
+                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto max-h-60"
+                defaultValue=""
+              >
+                <option value="" disabled>Select leader</option>
+                {fileteredTeam.length > 0 && fileteredTeam[0].teamMembersEmails?.map((email) => (
+                  <option key={email} value={email} className='overflow-auto'>
+                    {email}
+                  </option>
+                ))}
+              </select>
+             
+
+            </div>
+
+            <div >
+              <label className="block text-sm font-medium">Backend Role Assigned To</label>
+              <select
+                {...register('backendRoleAssignedTo', { required: 'Role is required' })}
+                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto max-h-60"
+                defaultValue=""
+              >
+                <option value="" disabled>Select leader</option>
+                {fileteredTeam.length > 0 && fileteredTeam[0].teamMembersEmails?.map((email) => (
+                  <option key={email} value={email} className='overflow-auto'>
+                    {email}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+
+            <div >
+              <label className="block text-sm font-medium">UI Role Assigned To</label>
+              <select
+                {...register('uiRoleAssignedTo', { required: 'Role is required' })}
+                className="input input-bordered border bg-white border-gray-200 w-full overflow-auto max-h-60"
+                defaultValue=""
+              >
+                <option value="" disabled>Select leader</option>
+                {fileteredTeam.length > 0 && fileteredTeam[0].teamMembersEmails?.map((email) => (
+                  <option key={email} value={email} className='overflow-auto'>
+                    {email}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+
+          {/* <input {...register('projectId')} placeholder="Project ID" className="input bg-white shadow-2xl input-bordered w-full" readOnly /> */}
+          {/* <input {...register('frontendRoleAssignedTo')} placeholder="Frontend Role Assigned To" className="input bg-white shadow-2xl input-bordered w-full" />
           <input {...register('backendRoleAssignedTo')} placeholder="Backend Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" />
           <input {...register('uiRoleAssignedTo')} placeholder="UI Role Assigned To" className="input bg-white shadow-lg input-bordered w-full" />
-         
+          */}
 
           <div className="col-span-full flex justify-end mt-4">
             <button type="submit" className="btn bg-task-primary border-none">Update</button>
