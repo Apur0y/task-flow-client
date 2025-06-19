@@ -158,7 +158,7 @@ const UserTable: FC = () => {
               <th className="px-4 py-2 ">Name</th>
               <th className="px-4 py-2 ">Email</th>
               <th className="px-4 py-2 ">Role</th>
-              <th className="px-4 py-2 ">Password</th>
+              {/* <th className="px-4 py-2 ">Password</th> */}
               <th className="px-4 py-2 ">Employee ID</th>
               <th className="px-4 py-2 ">Address</th>
               <th className="px-4 py-2 ">Phone</th>
@@ -182,21 +182,21 @@ const UserTable: FC = () => {
                 </td>
                 <td className="px-4 py-2 ">{user.userEmail}</td>
                 <td className="px-4 py-2 ">{user.userRole}</td>
-                <td className="px-4 py-2 ">
+                {/* <td className="px-4 py-2 "> */}
 
                   {/* {user.userPassword} */}
-                  <button className='text-task-primary hover:underline cursor-pointer'>Manage Password</button>
+                  {/* <button className='text-task-primary hover:underline cursor-pointer'>Manage Password</button> */}
 
-                </td>
+                {/* </td> */}
                 <td className="px-4 py-2 ">{user.userEmployeeId}</td>
                 <td className="px-4 py-2 ">{user.address}</td>
                 <td className="px-4 py-2 ">{user.phone}</td>
 
                 <td className="px-4 py-2  text-center space-x-2">
-
+{/* 
                   <button className="text-task-primary hover:text-yellow-700">
                     <FaEdit />
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => handleUserDelete(user._id)}
                     className="text-red-500 hover:text-red-700">

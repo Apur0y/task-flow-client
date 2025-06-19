@@ -1,22 +1,38 @@
-import { DeleteIcon, Edit, Mail, Phone } from 'lucide-react';
+import { DeleteIcon, Mail, Move, Phone } from 'lucide-react';
 
 import React, { useState } from 'react';
 import { Team } from './TeamSection';
-import { useDeleteTeamMutation } from '@/feature/team/teamApi';
+import { useDeleteTeamMutation, useGetAllTeamQuery, useMoveMemberMutation } from '@/feature/team/teamApi';
 import toast from 'react-hot-toast';
+// import { useForm } from 'react-hook-form';
 
 export default function TeamCard({ team }: { team: Team }) {
     const [showPhone, setShowPhone] = useState(false);
     const [showEmail, setShowEmail] = useState(false);
     const [deleteTeam] = useDeleteTeamMutation();
+    const [newTeam, setNewTeam] = useState("");
+    const [moveMember, setMoveMember] = useState("")
+    const { data: allteams } = useGetAllTeamQuery({})
+    const [moveUser] = useMoveMemberMutation();
+    //      const {
+    //     register,
+    //     handleSubmit,
+    //     reset,
+    //     formState: { errors }
+    //   } = useForm<Team>();
 
+    //   useEffect(() => {
+    //     if (team) {
+    //       reset(team); // Pre-fill with team data
+    //     }
+    //   }, [team, reset]);
 
-    const {teamName, teamLeaderEmail,teamColeaderEmail,teamMembersEmails,teamID,_id} =team;
+    const { teamName, teamLeaderEmail, teamColeaderEmail, teamMembersEmails, teamID, _id } = team;
     const onlyMembers = teamMembersEmails.filter(
         (member: string) => member !== teamLeaderEmail && member !== teamColeaderEmail
     );
 
-    const handleTeamDelete=async(id:string)=>{
+    const handleTeamDelete = async (id: string) => {
         try {
             const response = await deleteTeam(id).unwrap();
             // Optionally, show a success message or update UI
@@ -24,9 +40,9 @@ export default function TeamCard({ team }: { team: Team }) {
         } catch (error) {
             // Handle error (e.g., show error notification)
             if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
-                
+
                 console.error('Failed to delete team:', error.data.message);
-            
+
                 toast.error(String(error.data.message || 'Failed to delete team'));
             } else {
                 console.error('Failed to delete team:', error);
@@ -35,96 +51,233 @@ export default function TeamCard({ team }: { team: Team }) {
         }
     }
 
+
+    // const handleteamEdit = (id:string) => {
+    //     console.log(id);
+    //     (document.getElementById('my_modal_2') as HTMLDialogElement)?.showModal();
+    // }
+
+
+
+    // const onSubmit = (data: Team) => {
+    //     console.log(data,"My data team")
+    //     console.log("first");
+    // };
+
+
+    const handleMoveMember = (member: string) => {
+        console.log(member)
+        setMoveMember(member);
+        (document.getElementById('my_modal_6') as HTMLDialogElement)?.showModal();
+    }
+
+    const handleMove = async () => {
+        console.log(moveMember, newTeam)
+        try {
+            const response = await moveUser({ memberEmail: moveMember,toTeamName:newTeam }).unwrap();
+            console.log(newTeam, "My team", moveMember);
+            if(response){
+                console.log(response)
+            }
+        } catch (error) {
+            console.error('Failed to move member:', error);
+            toast.error('Failed to move member');
+        }
+    }
+
     return (
-        <div className="mx-auto  bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
-
-            <div className="px-6 py-4 flex justify-between border-b gap-2">
-
-                <div className='flex gap-2'>
-                    {/* <Image src="https://admin.pixelstrap.net/riho/assets/images/social-app/timeline-3.png" alt="" height={10} width={10} className='h-15 w-15 rounded-full bg-gray-500'></Image> */}
-                    <p className='h-15 w-15 rounded-full bg-gradient-to-br from-green-700 via-green-900 to-emerald-700'></p>
-                    <div className='mt-2'>
-                        <h2 className="text-md font-bold">{teamName} </h2>
-                        <p className="text-sm">{teamID}</p>
+        <div className="w-full bg-white shadow-md rounded-lg border border-gray-100 overflow-hidden">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
+                <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-teal-500 text-white font-bold text-lg">
+                        {teamName?.charAt(0)}
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800">{teamName}</h2>
+                        <p className="text-sm text-gray-500">{teamID}</p>
                     </div>
                 </div>
+                <button
+                    onClick={() => handleTeamDelete(_id)}
+                    className="text-red-500 hover:text-red-600 transition"
+                    title="Delete Team"
+                >
+                    <DeleteIcon />
+                </button>
+            </div>
 
-
-                <div className='flex gap-2'>
-                    <button className='flex gap-1 font-semibold'><Edit></Edit> Edit</button>
-                    <button onClick={()=>handleTeamDelete(_id)} className='flex gap-1 font-semibold text-red-700 cursor-pointer'><DeleteIcon></DeleteIcon></button>
-
+            {/* Stats Section */}
+            <div className="grid grid-cols-2 md:grid-cols-3 divide-x border-b text-center text-sm bg-gray-50">
+                <div className="p-4">
+                    <p className="text-gray-500">Completed</p>
+                    <p className="text-lg font-bold text-teal-700">12</p>
+                </div>
+                <div className="p-4">
+                    <p className="text-gray-500">Running</p>
+                    <p className="text-lg font-bold text-indigo-600">3</p>
+                </div>
+                <div className="p-4">
+                    <p className="text-gray-500">Earnings</p>
+                    <p className="text-lg font-bold text-green-600">$15,000</p>
                 </div>
             </div>
 
-            <div className="my-4 flex justify-center gap-2  text-center text-sm  divide-x divide-gray-300">
-                <div className="px-2 sm:px-4 py-3">
-                    <p className="font-bold ">Completed</p>
-                    <p className='font-semibold'>12</p>
-                </div>
-                <div className="px-2 sm:px-4 py-3">
-                    <p className="font-bold ">Running</p>
-                    <p className='font-semibold'>3</p>
-                </div>
-                <div className="px-2 sm:px-4 py-3">
-                    <p className="font-bold ">Earnings</p>
-                    <p className='font-semibold'>$15,000</p>
+            {/* Team Members */}
+            <div className="p-4">
+                <div className="border rounded-md divide-y text-sm overflow-hidden">
+                    <div className="flex justify-between p-3 bg-teal-100 text-teal-800 font-medium">
+                        <span>{teamLeaderEmail}</span>
+                        <span>Leader</span>
+                    </div>
+                    <div className="flex justify-between p-3 bg-gray-100 text-gray-500 font-medium">
+                        <span>{teamColeaderEmail}</span>
+                        <span>Co-Leader</span>
+                    </div>
+                    {onlyMembers.map((member, idx) => (
+                        <div className="flex justify-between p-3 hover:bg-gray-50" key={idx}>
+                            <span>{member}</span>
+                            <span className="text-gray-500">Member</span>
+                            <button onClick={() => handleMoveMember(member)}>Move <Move></Move></button>
+                        </div>
+                    ))}
                 </div>
             </div>
 
-
-            <div className='m-3 border border-gray-200 rounded-lg max-h-36 overflow-auto'>
-                <div className=" p-2 flex justify-between text-white bg-task-primary rounded-t-md">
-                    <p className=" font-semibold ">{teamLeaderEmail}</p>
-                    <p className=""> Leader</p>
-                </div>
-
-                <div className="p-2 bg-teal-100 flex justify-between">
-                    <p className="font-semibold ">{teamColeaderEmail}</p>
-                    <p className="">Co-Leader</p>
-                </div>
-
-                <div>
-                    {
-                    onlyMembers.map((member: string, idx: number) => (
-                            <div className="p-2  flex justify-between" key={idx}>
-                                <p className="font-semibold ">{member}</p>
-                                <p className="">Member</p>
-                            </div>
-                        ))
-                    }
-                </div>
-
-
-            </div>
-            <div className="flex justify-center md:gap-3 py-3">
+            {/* Contact Info */}
+            <div className="flex flex-wrap justify-center gap-6 border-t py-4 px-4 text-sm">
                 <div
-                    className={`group flex items-center transition-all gap-1 duration-1000bg-green-200 p-2 rounded-full `}
+                    className="flex items-center gap-2 text-gray-600 hover:text-teal-600 cursor-pointer transition"
                     onClick={() => setShowPhone(!showPhone)}
                 >
-                    <Phone />
-                    <p
-                        className={`group-hover:opacity-100 group-hover:max-w-xs transition-all duration-300 overflow-hidden whitespace-nowrap text-xs md:text-base`}
-                    >
-                        0178524789
-                    </p>
+                    <Phone className="text-teal-500" />
+                    <span>0178524789</span>
                 </div>
-
                 <div
-                    className={`group flex items-center transition-all duration-1000  p-2 gap-1 rounded-full 
-                        `}
+                    className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 cursor-pointer transition"
                     onClick={() => setShowEmail(!showEmail)}
                 >
-                    <Mail />
-                    <p
-                        className={`group-hover:opacity-100  group-hover:max-w-xs transition-all duration-300 overflow-hidden whitespace-nowrap text-xs md:text-base`}
-                    >
-                        taskflow@mail.com
-                    </p>
+                    <Mail className="text-indigo-500" />
+                    <span>taskflow@mail.com</span>
                 </div>
             </div>
+
+            {/* Open the modal using document.getElementById('ID').showModal() method */}
+            {/* <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>open modal</button> */}
+        <dialog id="my_modal_6" className="modal">
+  <div className="modal-box bg-white rounded-md shadow-lg max-w-md w-full">
+    <h3 className="text-xl font-semibold text-gray-800 mb-4">Move Team Member</h3>
+
+    {/* Member to move */}
+    <div className="mb-4">
+      <p className="text-sm text-gray-500 mb-1">Member to move:</p>
+      <div className="px-3 py-2 border rounded-md bg-gray-50 text-gray-700">
+        {moveMember}
+      </div>
+    </div>
+
+    {/* Select new team */}
+    <div className="mb-6">
+      <p className="text-sm text-gray-500 mb-2">Move to team:</p>
+      <div className="grid gap-2 max-h-40 overflow-auto">
+        {allteams?.data.map((team: Team) => (
+          <button
+            key={team.teamID}
+            onClick={() => setNewTeam(team.teamName)}
+            className={`px-4 py-2 rounded-md border text-left hover:bg-gray-100 ${
+              newTeam === team.teamName ? 'bg-gray-200 font-semibold' : ''
+            }`}
+          >
+            {team.teamName}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {/* Action buttons */}
+    <div className="flex justify-end gap-2">
+      <form method="dialog">
+        <button className="btn border-none bg-gray-400">Cancel</button>
+      </form>
+      <button
+      type='button'
+        onClick={handleMove}
+        className="btn hover:bg-task-primary border-none"
+      >
+        Move
+      </button>
+    </div>
+  </div>
+
+  {/* Modal backdrop */}
+  <form method="dialog" className="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>
+
+
 
 
         </div>
+
+
     );
 }
+
+
+
+//   <dialog id="my_modal_2" className="modal">
+//       <div className="modal-box bg-white">
+//         <h3 className="font-bold text-lg mb-4">Update Team</h3>
+
+//         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+//   <div>
+//     <label className="block text-sm font-medium">Team Name</label>
+//     <input
+//       {...register('teamName', { required: 'Team name is required' })}
+//       className="input input-bordered bg-white shadow-lg w-full"
+//       placeholder="Enter team name"
+//     />
+//     {errors.teamName && <p className="text-red-500 text-sm">{errors.teamName.message}</p>}
+//   </div>
+
+//           <div>
+//             <label className="block text-sm font-medium">Team Leader Email</label>
+//             <input
+//               {...register('teamLeaderEmail', { required: 'Leader email is required' })}
+//               className="input input-bordered bg-white shadow-lg w-full"
+//               placeholder="Enter leader email"
+//             />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium">Team Co-leader Email</label>
+//             <input
+//               {...register('teamColeaderEmail')}
+//               className="input input-bordered bg-white shadow-lg w-full"
+//               placeholder="Enter co-leader email"
+//             />
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium">Team Members (comma-separated emails)</label>
+//             <input
+//               {...register('teamMembersEmails')}
+//               className="input input-bordered bg-white shadow-lg w-full"
+//               placeholder="e.g. user1@example.com,user2@example.com"
+//               defaultValue={team.teamMembersEmails.join(',')}
+//             />
+//           </div>
+
+//           <div className="flex justify-end">
+//             <button type="submit" className="btn btn-primary">
+//               Update
+//             </button>
+//           </div>
+//         </form>
+//       </div>
+
+//       <form method="dialog" className="modal-backdrop">
+//         <button>close</button>
+//       </form>
+//     </dialog>

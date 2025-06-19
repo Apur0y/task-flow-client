@@ -101,7 +101,7 @@ export default function TeamSection() {
       <section className='flex justify-between border-b mb-5 pb-4 gap-2'>
         <div >
 
-          <div className="relative md:w-full max-w-sm ml-2">
+          {/* <div className="relative md:w-full max-w-sm ml-2">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
               <Search size={18} />
             </span>
@@ -111,7 +111,7 @@ export default function TeamSection() {
               placeholder="Search Teams"
               onChange={(e) => handleSearch(e.target.value)}
             />
-          </div>
+          </div> */}
         </div>
 
         <div>
@@ -125,12 +125,12 @@ export default function TeamSection() {
 
       </section>
 
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-col  justify-center gap-4">
         {teams.map((team) => (
           <div
             key={team.teamID}
 
-            className="w-full  lg:w-[48%]  xl:w-[32%] 2xl:w-[24%]"
+            // className="w-full  lg:w-[48%]  xl:w-[32%] 2xl:w-[24%]"
           >
             <TeamCard team={team} />
           </div>
