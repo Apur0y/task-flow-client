@@ -59,8 +59,6 @@ export default function Page({ params }: PageProps) {
 
   const coleaderRoutes = route === "Project Update" && role === "teamColeader"
     ? <div><ColeaderUpdate /></div>
-    : route === "Project Update" && role === "teamLeader"
-    ? <div><ProjectUpdate /></div>
     : route === "My Projects" && role === "teamColeader"
     ?<div><MyProjects /></div>
     : null;
@@ -78,6 +76,7 @@ export default function Page({ params }: PageProps) {
 
   return (
     <div>
+      
       {adminRoutes || leaderRoutes || coleaderRoutes || memberRoutes }
     </div>
   )

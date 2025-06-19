@@ -71,7 +71,8 @@ export default function ColeaderUpdate() {
 
 
   useEffect(()=>{
-    const getTeam = teams.filter(t => t.teamLeaderEmail === user)
+          const getTeam = teams.filter(t => t.teamLeaderEmail === user || t.teamColeaderEmail ===user || t.teamMembersEmails.map(t=>t).includes(user))
+
     setFilteredTeams(getTeam);
     // const getedProject = projects.filter(p => fileteredTeam.some(t => t.teamName === p.teamName));
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
@@ -83,8 +84,8 @@ export default function ColeaderUpdate() {
       frontendRoleAssignedTo: selectedProject.frontendRoleAssignedTo || '',
       backendRoleAssignedTo: selectedProject.backendRoleAssignedTo || '',
       uiRoleAssignedTo: selectedProject.uiRoleAssignedTo || '',
-      lastUpdate: selectedProject.lastUpdate || '',
-      lastMeeting: selectedProject.lastMeeting || '',
+      lastUpdate: selectedProject.lastUpdate?.slice(0, 16) || '2025-06-19T14:30',
+      lastMeeting: selectedProject.lastMeeting || '2025-07-22T14:30',
       projectStatus: selectedProject.projectStatus || '',
       estimatedDelivery: selectedProject.estimatedDelivery || '',
       rating: selectedProject.rating || '',
@@ -101,7 +102,7 @@ export default function ColeaderUpdate() {
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
 
 
-     
+     console.log(fileteredTeam)
 
 
       const handleEdit = (project: Project) => {
@@ -115,7 +116,7 @@ export default function ColeaderUpdate() {
     }
   };
 
-console.log(fileteredTeam);
+console.log(fileteredTeam,"filtere");
   
   const onSubmit = async (formData: Partial<Project>) => {
     console.log(formData)
@@ -134,6 +135,7 @@ console.log(fileteredTeam);
 
   return (
     <div className='mx-9'>
+      <p>Hi how are you</p>
  <div className="mt-6 overflow-x-auto rounded-lg shadow-md">
       <table className="w-full border-collapse bg-white text-sm">
         <thead>
