@@ -47,11 +47,14 @@ export default function ProjectUpdate() {
   const [teams, setTeams] = useState<Team[]>([])
   // const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
   const [fileteredTeam, setFilteredTeams]=useState<Team[]>([]);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
 
   const auth = useSelector(selectAuth);
   const {data:allProjects} = useGetProjectsCatchallQuery({});
   const {data:allTeam} =useGetAllTeamQuery({})
   const [updateProject] =useUpdateProjectMutation();
+   const { register, handleSubmit,reset } = useForm({});
 
 
   useEffect(()=>{
@@ -74,17 +77,35 @@ export default function ProjectUpdate() {
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
     console.log(getPro)
     // setFilteredProjects(getPro)
-  },[teams, projects, user])
+
+     if (selectedProject) {
+    reset({
+      frontendRoleAssignedTo: selectedProject.frontendRoleAssignedTo || '',
+      backendRoleAssignedTo: selectedProject.backendRoleAssignedTo || '',
+      uiRoleAssignedTo: selectedProject.uiRoleAssignedTo || '',
+      lastUpdate: selectedProject.lastUpdate || '',
+      lastMeeting: selectedProject.lastMeeting || '',
+      projectStatus: selectedProject.projectStatus || '',
+      estimatedDelivery: selectedProject.estimatedDelivery || '',
+      rating: selectedProject.rating || '',
+      clientStatus: selectedProject.clientStatus || '',
+      figmaLink: selectedProject.figmaLink || '',
+      backendLink: selectedProject.backendLink || '',
+      liveLink: selectedProject.liveLink || '',
+      deliveryDate: selectedProject.deliveryDate || '',
+      requirementDoc: selectedProject.requirementDoc || '',
+    });
+  }
+  },[teams, projects, user,selectedProject, reset])
 
     const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
 
 
-      const { register, handleSubmit } = useForm({
-  });
+     
 
 
       const handleEdit = (project: Project) => {
-    // setSelectedProject(project);
+    setSelectedProject(project);
     // reset(project); // Pre-fill form
     // setOpen(true);
     console.log(";asd",project)
@@ -94,17 +115,12 @@ export default function ProjectUpdate() {
     }
   };
 
-
-  // const [open, setOpen] = useState(false);
-  // const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  
-
-
+console.log(fileteredTeam);
   
   const onSubmit = async (formData: Partial<Project>) => {
     console.log(formData)
     const cancellationNote=formData;
-    const projectId= 'PRJ0113';
+    const projectId= selectedProject?.projectId;
 
     const responce = await updateProject({ projectId, cancellationNote }).unwrap();
     if(responce){
