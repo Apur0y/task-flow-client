@@ -38,7 +38,7 @@ export function NavMain({}: {
   const adminRoutes = ["Users", "Projects", "Teams"]
   const leaderRoutes = ["My Projects","Role Assign", "Project Update","Team Chat"]
   const coLeaderRoutes = ["My Projects","Project Update","Team Chat"]
-  const memberRoutes = ["My Projects","View Resource","Team Chat"]
+  const memberRoutes = ["My Projects","Team Chat"]
   const clientRoutes = ["Payment"]
 
 

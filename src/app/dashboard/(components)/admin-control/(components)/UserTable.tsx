@@ -6,7 +6,7 @@ import { Calendar, Search } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import {  FaTrash } from 'react-icons/fa';
 
 
 interface User {

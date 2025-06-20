@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import io from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode';
-import axios, { all } from 'axios'; // Added for HTTP request
+// import axios,{all} from 'axios'; // Added for HTTP request
 import { useRouter } from 'next/navigation';
 import { useGetAllTeamQuery } from '@/feature/team/teamApi';
 import { useSelector } from 'react-redux';
@@ -33,7 +33,7 @@ function Chat() {
       
     }
 
-    socketRef.current = io('http://localhost:5100', {
+    socketRef.current = io('https://taskflow-smt.up.railway.app/', {
       withCredentials: true,
       auth: {
         token: accessToken,
@@ -77,31 +77,33 @@ function Chat() {
   team.teamMembersEmails?.includes(me ?? ''));
  setTeamNameInput(userTeams[0]?.teamName)
  setTeamName(userTeams[0]?.teamName)
+ console.log(teamNameInput)
 }
-
+ 
 
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages,allTeam?.data]);
- 
+  
+  console.log(teamName)
 
-  const handleSetTeamName = async () => {
-    if (teamNameInput.trim()) {
-      // Create chatroom before joining
-      try {
-        const response = await axios.post(
-          'http://localhost:5100/api/chat/',
-          { teamName: teamNameInput },
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-        console.log("Chatroom created:", response.data);
-        setTeamName(teamNameInput); // Join the room only after successful creation
-      } catch (error) {
-        console.error("Failed to create chatroom:", error);
-        // Optionally handle error (e.g., alert user or allow joining anyway)
-        setTeamName(teamNameInput); // Allow joining even if chat creation fails
-      }
-    }
-  };
+//   const handleSetTeamName = async () => {
+//     if (teamNameInput.trim()) {
+//       // Create chatroom before joining
+//       try {
+//         const response = await axios.post(
+//           'http://localhost:5100/api/chat/',
+//           { teamName: teamNameInput },
+//           { headers: { Authorization: `Bearer ${accessToken}` } }
+//         );
+//         console.log("Chatroom created:", response.data);
+//         setTeamName(teamNameInput); // Join the room only after successful creation
+//       } catch (error) {
+//         console.error("Failed to create chatroom:", error);
+//         // Optionally handle error (e.g., alert user or allow joining anyway)
+//         setTeamName(teamNameInput); // Allow joining even if chat creation fails
+//       }
+//     }
+//   };
 
   const handleSendMessage = () => {
     if (messageInput.trim() && accessToken && teamName) {

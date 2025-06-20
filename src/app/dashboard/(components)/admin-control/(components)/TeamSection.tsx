@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+// import { Search } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import TeamCard from './TeamCard';
 import { useForm } from 'react-hook-form';
@@ -63,18 +63,18 @@ export default function TeamSection() {
 
 
 
-  const handleSearch = (searchInput: string) => {
-    const lowerSearch = searchInput.toLowerCase();
-    console.log(lowerSearch);
+  // const handleSearch = (searchInput: string) => {
+  //   const lowerSearch = searchInput.toLowerCase();
+  //   console.log(lowerSearch);
 
-    //   const filtered = users.filter(user =>
-    //     user.userEmail.toLowerCase().includes(lowerSearch) ||
-    //     user.userName.toLowerCase().includes(lowerSearch)
-    //   );
+  //   //   const filtered = users.filter(user =>
+  //   //     user.userEmail.toLowerCase().includes(lowerSearch) ||
+  //   //     user.userName.toLowerCase().includes(lowerSearch)
+  //   //   );
 
-    //   setFilteredUsers(filtered);
+  //   //   setFilteredUsers(filtered);
 
-  }
+  // }
 
   const onSubmit = async (data: Team) => {
     const res = await teamCreation(data) as { data?: any; error?: any };
