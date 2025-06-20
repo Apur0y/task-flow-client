@@ -10,6 +10,7 @@ import {  selectAuth } from '@/feature/auth/authSelectors';
 import MyProjects from '../(components)/MyProjects';
 import ColeaderUpdate from '../(components)/coleader-control/ColeaderUpdate';
 import Chat from '../(components)/Chat';
+import UserProfile from '@/app/profile/page';
 
 interface PageProps {
   params: Promise<{
@@ -77,6 +78,8 @@ export default function Page({ params }: PageProps) {
     ?<div><MyProjects /></div>
      : route === "Team Chat" && role === "teamMember"
     ?<div><Chat /></div>
+     : route === "profile" && role === "teamMember"
+    ?<div><UserProfile /></div>
     : null;
 
 
