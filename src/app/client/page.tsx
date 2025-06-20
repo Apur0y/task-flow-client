@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/dialog";
 import { loadStripe } from "@stripe/stripe-js";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
-const stripePromise = loadStripe("pk_test_your_publishable_key_here"); // Replace with your actual Stripe publishable key
+const stripePromise = loadStripe("pk_test_51..."); // Replace with your actual Stripe test publishable key
 
 type Project = {
   projectId: string;
@@ -35,13 +36,17 @@ export default function ClientProjects() {
   } = useGetProjectsCatchallQuery("un");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [loginClientId, setLoginClientId] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState<Project | null>(
+    null
+  );
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const storedClientId = localStorage.getItem("loginClientId");
     if (storedClientId) {
       setLoginClientId(storedClientId);
     } else {
-      setLoginClientId("CLI001"); // Default value if not found
+      setLoginClientId("CLI001");
     }
   }, []);
 
@@ -54,40 +59,59 @@ export default function ClientProjects() {
     setSelectedProject(project);
   };
 
-  const handlePay = async (project: Project) => {
+  const handlePay = (project: Project) => {
+    setShowConfirmModal(project);
+  };
+
+  const confirmPayment = async (project: Project) => {
+    setShowConfirmModal(null);
+    setIsProcessing(true);
+
     const stripe = await stripePromise;
     if (!stripe) {
       console.error("Stripe failed to load");
+      toast.error("Payment initialization failed.");
+      setIsProcessing(false);
       return;
     }
 
-    const response = await fetch(
-      "https://taskflow-server-pi.vercel.app/api/payment/create-checkout-session",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectId: project.projectId,
-          amount: project.projectValue * 100, // Amount in cents
-          clientId: loginClientId,
-        }),
-      }
-    );
-
-    const data = await response.json();
-    console.log("API Response:", data); // Debug purpose
-
-    if (response.ok && data.data && data.data.url) {
-      window.location.href = data.data.url; // Redirect to Stripe Checkout URL
-    } else {
-      console.error(
-        "Checkout session URL not received:",
-        data.error || "Unknown error"
+    try {
+      const response = await fetch(
+        "https://taskflow-server-pi.vercel.app/api/payment/create-checkout-session",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            projectId: project.projectId,
+            amount: Math.round(project.projectValue * 100), // Ensure amount is an integer in cents
+            clientId: loginClientId,
+            success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${window.location.origin}/cancel`,
+          }),
+        }
       );
+
+      const data = await response.json();
+      console.log("Payment API Response:", data);
+
+      if (!response.ok || !data.success || !data.data || !data.data.url) {
+        console.error(
+          "Checkout session creation failed:",
+          data.message || "Unknown error"
+        );
+        toast.error(data.message || "Failed to create payment session.");
+        setIsProcessing(false);
+        return;
+      }
+
+      window.location.href = data.data.url;
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      toast.error("An error occurred while processing payment.");
+      setIsProcessing(false);
     }
   };
 
-  // Animation variants
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -96,8 +120,8 @@ export default function ClientProjects() {
 
   return (
     <div className="bg-gray-50 min-h-screen py-12">
-      <div className="max-w-[1560px] mx-auto p-6 ">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6  pb-2">
+      <div className="max-w-[1560px] mx-auto p-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 pb-2">
           My Projects
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -137,11 +161,11 @@ export default function ClientProjects() {
                 </p>
                 <div className="space-y-2 mb-6">
                   <p className="text-gray-700 text-md">
-                    <span className="font-semibold ">ID:</span>{" "}
+                    <span className="font-semibold">ID:</span>{" "}
                     {project.projectId}
                   </p>
                   <p className="text-gray-700 text-md">
-                    <span className="font-semibold ">Value:</span> $
+                    <span className="font-semibold">Value:</span> $
                     {project.projectValue.toFixed(2)}
                   </p>
                   <p className="text-gray-500 text-sm">
@@ -162,16 +186,18 @@ export default function ClientProjects() {
                     variant="default"
                     size="sm"
                     className={`bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white transition-all ${
-                      project.projectStatus.toLowerCase() === "cancelled"
+                      project.projectStatus.toLowerCase() === "cancelled" ||
+                      isProcessing
                         ? "bg-gray-300 text-black opacity-75 cursor-not-allowed"
                         : ""
                     }`}
                     onClick={() => handlePay(project)}
                     disabled={
-                      project.projectStatus.toLowerCase() === "cancelled"
+                      project.projectStatus.toLowerCase() === "cancelled" ||
+                      isProcessing
                     }
                   >
-                    Pay
+                    {isProcessing ? "Processing..." : "Pay"}
                   </Button>
                 </div>
               </motion.div>
@@ -235,7 +261,6 @@ export default function ClientProjects() {
                       "No cancellation note available"}
                   </p>
                 )}
-
                 <Button
                   variant="outline"
                   className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50"
@@ -243,6 +268,48 @@ export default function ClientProjects() {
                 >
                   Close
                 </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {showConfirmModal && (
+          <Dialog open={true} onOpenChange={() => setShowConfirmModal(null)}>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-gray-800">
+                Confirm Payment
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Please confirm your payment details.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogContent className="max-w-md">
+              <div className="p-6 space-y-4">
+                <p className="text-gray-700">
+                  <span className="font-semibold">Project:</span>{" "}
+                  {showConfirmModal.projectName}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Amount:</span> $
+                  {showConfirmModal.projectValue.toFixed(2)}
+                </p>
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="outline"
+                    className="text-gray-600 border-gray-600 hover:bg-gray-50"
+                    onClick={() => setShowConfirmModal(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="default"
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                    onClick={() => confirmPayment(showConfirmModal)}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? "Processing..." : "Confirm Payment"}
+                  </Button>
+                </div>
               </div>
             </DialogContent>
           </Dialog>

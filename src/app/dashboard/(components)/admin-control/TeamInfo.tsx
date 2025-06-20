@@ -10,10 +10,10 @@ export default function TeamInfo() {
           <p>Dashboard - Teams</p>
         </header>
 
-        
+
         <TeamSection></TeamSection>
 
-     
+
     </div>
   )
 }
