@@ -208,6 +208,10 @@ export default function ClientProjects() {
                   {selectedProject.projectDescription}
                 </p>
                 <p className="text-gray-700">
+                  <span className="font-semibold">Station:</span>{" "}
+                  {selectedProject.station}
+                </p>
+                <p className="text-gray-700">
                   <span className="font-semibold">Value:</span> $
                   {selectedProject.projectValue.toFixed(2)}
                 </p>
@@ -223,6 +227,15 @@ export default function ClientProjects() {
                   <span className="font-semibold">Status:</span>{" "}
                   {selectedProject.projectStatus}
                 </p>
+                {selectedProject.projectStatus.toLowerCase() ===
+                  "cancelled" && (
+                  <p className="text-gray-700 border border-red-700 rounded-xl p-3">
+                    <span className="font-semibold">Cancellation Note:</span>{" "}
+                    {selectedProject.station ||
+                      "No cancellation note available"}
+                  </p>
+                )}
+
                 <Button
                   variant="outline"
                   className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50"

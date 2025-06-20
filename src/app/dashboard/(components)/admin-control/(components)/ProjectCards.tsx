@@ -966,7 +966,7 @@ export default function ProjectCards() {
         {/* Create New Project Button */}
         <div className="">
           <a href="Projects/create-project" className="float-right">
-            <Button className="bg-[#006666] text-white hover:bg-green-900 flex items-center">
+            <Button className="bg-[#006666] text-white hover:bg-green-900  flex items-center">
               <AddIcon />
               Create New Project
             </Button>
