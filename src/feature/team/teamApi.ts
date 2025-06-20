@@ -34,9 +34,18 @@ export const userCreation = createBaseApi.injectEndpoints({
         
       }),
         }),
+                   moveMember: build.mutation({
+             query: (body) => ({
+        url: '/api/team/move-member',
+        method: "PATCH",
+        body:body
+        
+      }),
+        }),
+        
 
     })
 })
 
 
-export const { useGetAllTeamQuery,useCreateTeamMutation, useDeleteTeamMutation} = userCreation;
+export const { useGetAllTeamQuery,useCreateTeamMutation, useDeleteTeamMutation,useMoveMemberMutation} = userCreation;

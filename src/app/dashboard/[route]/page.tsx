@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import {  selectAuth } from '@/feature/auth/authSelectors';
 import MyProjects from '../(components)/MyProjects';
 import ColeaderUpdate from '../(components)/coleader-control/ColeaderUpdate';
+import Chat from '../(components)/Chat';
 
 interface PageProps {
   params: Promise<{
@@ -54,15 +55,17 @@ export default function Page({ params }: PageProps) {
     ? <div><ProjectUpdate /></div>
     : route === "My Projects" && role === "teamLeader"
     ?<div><MyProjects /></div>
+    : route === "Team Chat" && role === "teamLeader"
+    ?<div><Chat /></div>
     : null;
 
 
   const coleaderRoutes = route === "Project Update" && role === "teamColeader"
     ? <div><ColeaderUpdate /></div>
-    : route === "Project Update" && role === "teamLeader"
-    ? <div><ProjectUpdate /></div>
     : route === "My Projects" && role === "teamColeader"
     ?<div><MyProjects /></div>
+     : route === "Team Chat" && role === "teamColeader"
+    ?<div><Chat /></div>
     : null;
 
 
@@ -72,12 +75,16 @@ export default function Page({ params }: PageProps) {
     ? <div><ProjectUpdate /></div>
     : route === "My Projects" && role === "teamMember"
     ?<div><MyProjects /></div>
+     : route === "Team Chat" && role === "teamMember"
+    ?<div><Chat /></div>
     : null;
 
 
 
   return (
     <div>
+      {/* <Chat></Chat> */}
+      
       {adminRoutes || leaderRoutes || coleaderRoutes || memberRoutes }
     </div>
   )

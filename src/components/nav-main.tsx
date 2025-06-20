@@ -29,20 +29,16 @@ export function NavMain({}: {
    const auth = useSelector(selectAuth);
 
 
-  const [role, setRole] = useState("admin");
+  const [role, setRole] = useState("");
   const [routes, setRoutes] = useState<string[]>([]);
   const [active, setActive] = useState("");
 
-
-  const [role, setRole] = useState("teamLeader")
-  const [routes, setRoutes] = useState<string[]>([])
-  const [active, setActive] = useState("")
 
 
   const adminRoutes = ["Users", "Projects", "Teams"]
   const leaderRoutes = ["My Projects","Role Assign", "Project Update","Team Chat"]
   const coLeaderRoutes = ["My Projects","Project Update","Team Chat"]
-  const memberRoutes = ["My Projects","View Resource","Team Chat"]
+  const memberRoutes = ["My Projects","Team Chat"]
   const clientRoutes = ["Payment"]
 
 
