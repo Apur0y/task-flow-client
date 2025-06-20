@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { TAuthState } from "@/feature/auth/authSlice";
 import { Highlighter } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [decoded, setDecoded] = useState<TAuthState | null>(null);
@@ -18,6 +19,7 @@ export default function Navbar() {
     user.userEmployeeId || decoded?.userEmployeeId
   );
   const { userEmail, userName } = data?.data || {};
+  const router = useRouter()
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
@@ -30,6 +32,12 @@ export default function Navbar() {
   // const toggleTheme = () => {
   //   setDarkMode(!darkMode);
   // };
+
+  const handleProfile = () => {
+    router.push("/dashboard/profile");
+    console.log("Profile button clicked");
+
+  };
 
   return (
     <div className="w-full border-b bg-white dark:bg-gray-800 dark:text-white px-4 py-2 flex items-center justify-between">
@@ -56,13 +64,15 @@ export default function Navbar() {
         </button> */}
 
         {/* Profile Image */}
-        <Image
+
+        <button onClick={()=>handleProfile()}>      <Image
           width={50}
           height={50}
           src="https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg" // replace with real image or placeholder
           alt="Profile"
           className="w-12 h-12 rounded-full object-cover"
-        />
+        /></button>
+  
       </div>
     </div>
   );

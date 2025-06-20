@@ -28,7 +28,6 @@ export function NavMain({}: {
   
    const auth = useSelector(selectAuth);
 
-
   const [role, setRole] = useState("");
   const [routes, setRoutes] = useState<string[]>([]);
   const [active, setActive] = useState("");

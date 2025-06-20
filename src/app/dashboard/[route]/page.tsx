@@ -77,6 +77,8 @@ export default function Page({ params }: PageProps) {
     ?<div><MyProjects /></div>
      : route === "Team Chat" && role === "teamMember"
     ?<div><Chat /></div>
+     : route === "Team Chat" && role === "teamMember"
+    ?<div><Chat /></div>
     : null;
 
 
