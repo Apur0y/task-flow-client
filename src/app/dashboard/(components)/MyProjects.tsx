@@ -1,7 +1,7 @@
 
 'use client'
 import { selectAuth } from '@/feature/auth/authSelectors';
-import { useGetProjectsCatchallQuery, useUpdateProjectMutation } from '@/feature/projectCreate/projectCreateSlice'
+import { useGetProjectsCatchallQuery } from '@/feature/projectCreate/projectCreateSlice'
 import { useGetAllTeamQuery } from '@/feature/team/teamApi';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
@@ -55,8 +55,8 @@ export default function MyProjects() {
       const auth = useSelector(selectAuth);
       const {data:allProjects} = useGetProjectsCatchallQuery({});
       const {data:allTeam} =useGetAllTeamQuery({})
-      const [updateProject] =useUpdateProjectMutation();
-      const { register, handleSubmit,reset } = useForm({});
+      
+      const { reset } = useForm({});
     
     
       useEffect(()=>{
@@ -76,8 +76,10 @@ export default function MyProjects() {
         const getTeam = teams.filter(t => t.teamLeaderEmail === user || t.teamColeaderEmail ===user || t.teamMembersEmails.map(t=>t).includes(user))
         setFilteredTeams(getTeam);
        
-        const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
-        console.log(getPro)
+        const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''))
+        setSelectedProject(getPro.length > 0 ? getPro[0] : null);
+        console.log(getPro);
+      
     
       },[teams, projects, user,selectedProject, reset])
         const getPro = projects.filter(p => fileteredTeam.map(f => f.teamName).includes(p.teamName ?? ''));
@@ -133,7 +135,7 @@ export default function MyProjects() {
       ))}</>:
       <div className="flex flex-col items-center justify-center py-12 text-gray-400">
         <span className="text-2xl mb-2">No projects found</span>
-        <span className="text-sm">You don't have any assigned projects yet.</span>
+        <span className="text-sm">You don&apos;t have any assigned projects yet.</span>
       </div>
      
       
