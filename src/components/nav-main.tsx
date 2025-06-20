@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { selectAuth } from "@/feature/auth/authSelectors";
+import { useRouter, usePathname } from "next/navigation";
+import { set } from "zod";
 
 export function NavMain({}: {
   items: {
@@ -27,7 +29,18 @@ export function NavMain({}: {
   const [role, setRole] = useState("");
   const [routes, setRoutes] = useState<string[]>([]);
   const [active, setActive] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
+  const pathname = usePathname();
+
+
+
+if (active) {
+  const isActive = pathname.includes(active);
+  console.log(isActive, "isActive");
+} else {
+  console.log("Active is not yet available:", active);
+}
 
 
   const adminRoutes = ["Users", "Projects", "Teams"]
@@ -56,6 +69,14 @@ export function NavMain({}: {
     } else {
       setRoutes([]);
     }
+
+    
+if (active) {
+  const isActive = pathname.includes(active);
+ setIsActive(isActive);
+} else{
+  setIsActive(false)
+}
   }, [role]);
 
   return (
@@ -85,7 +106,7 @@ export function NavMain({}: {
             <SidebarMenuItem key={item}>
               <SidebarMenuButton tooltip={item}>
                 <Link
-                  className={`w-full ${active === item ? "bg-white rounded-lg text-black" : "text-white"} hover:text-black`}
+                  className={`w-full ${active === item || isActive ? "bg-white rounded-lg text-black" : "text-white"} hover:text-black`}
                   href={`/dashboard/${item}`}
                   onClick={() => setActive(item)}
                 >

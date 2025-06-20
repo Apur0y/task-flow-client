@@ -1,4 +1,4 @@
-import { DeleteIcon, Mail, Move, Phone } from 'lucide-react';
+import { DeleteIcon, Mail,  Phone } from 'lucide-react';
 
 import React, { useEffect, useState } from 'react';
 import { Team } from './TeamSection';
@@ -9,10 +9,6 @@ import { Project } from '../../MyProjects';
 import Swal from 'sweetalert2';
 // import { useForm } from 'react-hook-form';
 
-interface TeamStats {
-    memberEmails: string[];
-
-}
 
 export default function TeamCard({ team }: { team: Team }) {
     const [showPhone, setShowPhone] = useState(false);
@@ -22,11 +18,11 @@ export default function TeamCard({ team }: { team: Team }) {
     const [moveMember, setMoveMember] = useState<string | null>(null);
     // const [member, setMember] = useState<string[]>([moveMember || ""]);
 
-    const { data: allteams ,refetch} = useGetAllTeamQuery({})
+    const { data: allteams, refetch } = useGetAllTeamQuery({})
     const [moveUser] = useMoveMemberMutation();
     const { data: allProjects } = useGetProjectsCatchallQuery({});
     const [getProjects, setProjects] = useState<Project[]>([]);
-    const [moveView, setMoveView]=useState(false)
+    const [moveView, setMoveView] = useState(false)
 
 
 
@@ -38,34 +34,34 @@ export default function TeamCard({ team }: { team: Team }) {
     const handleTeamDelete = async (id: string) => {
 
         Swal.fire({
-  title: "Are you sure?",
-  text: "You won't be able to revert this!",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Yes, delete it!"
-}).then(async(result) => {
-  if (result.isConfirmed) {
-   try {
-            const response = await deleteTeam(id).unwrap();
-            // Optionally, show a success message or update UI
-            console.log('Team deleted successfully:', response);
-        } catch (error) {
-            // Handle error (e.g., show error notification)
-            if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await deleteTeam(id).unwrap();
+                    toast.success(response.data.message || 'Team deleted successfully');
+                    refetch(); 
+                    console.log('Team deleted successfully:', response);
+                } catch (error) {
+                    if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
 
-                console.error('Failed to delete team:', error.data.message);
+                        console.error('Failed to delete team:', error.data.message);
 
-                toast.error(String(error.data.message || 'Failed to delete team'));
-            } else {
-                console.error('Failed to delete team:', error);
-                toast.error('Failed to delete team');
+                        toast.error(String(error.data.message || 'Failed to delete team'));
+                    } else {
+                        console.error('Failed to delete team:', error);
+                        toast.error('Failed to delete team');
+                    }
+                }
             }
-        }
-  }
-});
-      
+        });
+
     }
     //     useEffect(() => {
     //     if (moveMember) {
@@ -118,7 +114,7 @@ export default function TeamCard({ team }: { team: Team }) {
         try {
             const response = await moveUser({ memberEmail: moveMember, toTeamName: newTeam }).unwrap();
             console.log(newTeam, "My team", moveMember);
-            if (response.success=== true) {
+            if (response.success === true) {
                 toast.success(response.data.message || 'Member moved successfully');
                 setMoveView(false);
                 console.log(response)
@@ -196,7 +192,7 @@ export default function TeamCard({ team }: { team: Team }) {
                             <span>{member}</span>
                             <span className="text-gray-500">Member</span>
                             <button className='py-1 rounded-sm shadow-lg font-semibold px-4 bg-gray-400 border-none' onClick={() => handleMoveMember(member)}>Move </button>
-                  
+
                         </div>
                     ))}
                 </div>
@@ -209,16 +205,7 @@ export default function TeamCard({ team }: { team: Team }) {
                         <p className="text-sm text-gray-500 mb-2">Move Member:</p>
                         <div className="grid gap-2 max-h-40 overflow-auto">
                             {moveMember}
-                            {/* {member?.map((memberEmail: string, idx: number) => (
-                                <button
-                                    key={memberEmail + idx}
-                                    onClick={() => setNewTeam(memberEmail)}
-                                    className={`px-4 py-2 rounded-md border text-left hover:bg-gray-100 ${newTeam === memberEmail ? 'bg-gray-200 font-semibold' : ''
-                                        }`}
-                                >
-                                    {memberEmail}
-                                </button>
-                            ))} */}
+                         
                         </div>
 
 
@@ -238,9 +225,9 @@ export default function TeamCard({ team }: { team: Team }) {
                             ))}
                         </div>
                     </div>
-                    <button onClick={()=>handleMove()} className='btn'>Move</button>
+                    <button onClick={() => handleMove()} className='btn'>Move</button>
                 </div>
-                
+
             </div>
 
 

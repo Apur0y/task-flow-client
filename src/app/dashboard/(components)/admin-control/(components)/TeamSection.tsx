@@ -1,10 +1,11 @@
 // import { Search } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import TeamCard from './TeamCard';
 import { useForm } from 'react-hook-form';
 import { useCreateTeamMutation, useGetAllTeamQuery } from '@/feature/team/teamApi';
 import toast from 'react-hot-toast';
 import { useGetAllUserQuery } from '@/feature/auth/authCredentialSlice';
+import { Search } from 'lucide-react';
 
 // import { Select } from '@radix-ui/react-select';
 
@@ -21,7 +22,8 @@ export interface Team {
 
 export interface People {
   userEmail: string;
-  userName: string
+  userName: string;
+  userRole: string;
 }
 
 
@@ -37,8 +39,27 @@ export default function TeamSection() {
 
   const [teamCreation] = useCreateTeamMutation();
   const { data: people } = useGetAllUserQuery({});
-  const { data: allteams } = useGetAllTeamQuery({});
+  const { data: allteams,refetch } = useGetAllTeamQuery({});
 
+const unassignedPeople = useMemo(() => {
+  if (!people?.data || !allteams?.data) return [];
+
+  // Step 1: Collect all emails that are already assigned to teams
+  const teamMemberEmails = new Set<string>();
+  allteams.data.forEach((team: Team) => {
+    teamMemberEmails.add(team.teamLeaderEmail);
+    teamMemberEmails.add(team.teamColeaderEmail);
+    team.teamMembersEmails.forEach(email => teamMemberEmails.add(email));
+  });
+
+  // Step 2: Filter users
+  return people.data.filter((person: People) => {
+    return (
+      person.userRole !== 'admin' && person.userRole !== 'client' &&  // exclude admins
+      !teamMemberEmails.has(person.userEmail) // exclude users already in any team
+    );
+  });
+}, [people, allteams]);
 
 
 
@@ -63,18 +84,18 @@ export default function TeamSection() {
 
 
 
-  // const handleSearch = (searchInput: string) => {
-  //   const lowerSearch = searchInput.toLowerCase();
-  //   console.log(lowerSearch);
+  const handleSearch = (searchInput: string) => {
+    const lowerSearch = searchInput.toLowerCase();
+    console.log(lowerSearch);
 
-  //   //   const filtered = users.filter(user =>
-  //   //     user.userEmail.toLowerCase().includes(lowerSearch) ||
-  //   //     user.userName.toLowerCase().includes(lowerSearch)
-  //   //   );
+    console.log(allteams?.data)
+      const filtered = allteams?.data.filter((team: Team) =>
+        team.teamName.toLowerCase().includes(lowerSearch)
+      );
 
-  //   //   setFilteredUsers(filtered);
+     setTeams(filtered)
 
-  // }
+  }
 
   const onSubmit = async (data: Team) => {
     const res = await teamCreation(data) as { data?: any; error?: any };
@@ -82,6 +103,8 @@ export default function TeamSection() {
     if (!('error' in res)) {
    
       toast.success("Team creation success")
+
+      refetch();
       reset();
       setErrorMe("");
        (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
@@ -101,7 +124,7 @@ export default function TeamSection() {
       <section className='flex justify-between border-b mb-5 pb-4 gap-2'>
         <div >
 
-          {/* <div className="relative md:w-full max-w-sm ml-2">
+       <div className="relative md:w-full max-w-sm ml-2">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
               <Search size={18} />
             </span>
@@ -111,7 +134,7 @@ export default function TeamSection() {
               placeholder="Search Teams"
               onChange={(e) => handleSearch(e.target.value)}
             />
-          </div> */}
+          </div> 
         </div>
 
         <div>
@@ -173,9 +196,9 @@ export default function TeamSection() {
                 defaultValue=""
               >
                 <option value="" disabled>Select leader</option>
-                {filteredMembers.map((p) => (
+                {unassignedPeople.map((p: People) => (
                   <option key={p.userEmail} value={p.userEmail} className='overflow-auto'>
-                    {p.userEmail}
+                  {p.userEmail}
                   </option>
                 ))}
               </select>
@@ -194,7 +217,7 @@ export default function TeamSection() {
                 defaultValue=""
               >
                 <option value="" disabled>Select Co-leader</option>
-                {filteredMembers.map((p) => (
+                {unassignedPeople.map((p:People) => (
                   <option key={p.userEmail} value={p.userEmail} className='overflow-auto'>
                     {p.userEmail}
                   </option>
@@ -216,7 +239,7 @@ export default function TeamSection() {
                 multiple
                 size={5}
               >
-                {filteredMembers.map((p) => (
+                {unassignedPeople.map((p:People) => (
                   <option key={p.userEmail} value={p.userEmail}>
                     {p.userEmail}
                   </option>
