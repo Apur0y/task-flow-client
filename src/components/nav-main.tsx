@@ -9,12 +9,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-
-} from "@/components/ui/sidebar"
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { useSelector } from "react-redux"
-import { selectAuth } from "@/feature/auth/authSelectors"
+} from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { selectAuth } from "@/feature/auth/authSelectors";
 
 export function NavMain({}: {
   items: {
@@ -23,9 +22,9 @@ export function NavMain({}: {
     icon?: Icon;
   }[];
 }) {
+  const auth = useSelector(selectAuth);
 
 
-  
    const auth = useSelector(selectAuth);
 
   const [role, setRole] = useState("");
@@ -42,11 +41,9 @@ export function NavMain({}: {
 
 
   useEffect(() => {
-    if(auth?.role){
-      setRole(auth.role)
-    }else{
-      
-
+    if (auth?.role) {
+      setRole(auth.role);
+    } else {
     }
 
     if (role === "admin") {

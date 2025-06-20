@@ -11,6 +11,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { loadStripe } from "@stripe/stripe-js";
+import { motion } from "framer-motion";
 
 const stripePromise = loadStripe("pk_test_your_publishable_key_here"); // Replace with your actual Stripe publishable key
 
@@ -86,139 +87,167 @@ export default function ClientProjects() {
     }
   };
 
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    hover: { scale: 1.05, transition: { duration: 0.3 } },
+  };
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-blue-200 pb-2">
-        My Projects
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading ? (
-          <p className="text-gray-500 text-lg">Loading projects...</p>
-        ) : isError ? (
-          <p className="text-red-500 text-lg">
-            Error loading projects. Please try again.
-          </p>
-        ) : clientProjects.length > 0 ? (
-          clientProjects.map((project: Project) => (
-            <div
-              key={project.projectId}
-              className="bg-gradient-to-br from-blue-50 to-white shadow-md rounded-xl p-6 hover:shadow-2xl transition-all duration-300 border border-gray-200 transform hover:-translate-y-2"
-              style={{ minHeight: "250px" }}
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl font-bold text-gray-800 bg-blue-100 px-3 py-1 rounded-full">
-                  {project.projectName}
-                </h3>
-                <span
-                  className={`text-sm font-semibold px-2 py-1 rounded-full ${
-                    project.projectStatus.toLowerCase() === "cancelled"
-                      ? "bg-red-100 text-red-500"
-                      : "bg-green-100 text-green-600"
-                  }`}
-                >
-                  {project.projectStatus}
-                </span>
-              </div>
-              <p className="text-gray-600 mb-4 line-clamp-3 text-sm leading-relaxed">
-                {project.projectDescription}
-              </p>
-              <div className="space-y-2 mb-6">
-                <p className="text-gray-700 text-md">
-                  <span className="font-semibold text-blue-600">ID:</span>{" "}
-                  {project.projectId}
+    <div className="bg-gray-50 min-h-screen py-12">
+      <div className="max-w-[1560px] mx-auto p-6 ">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6  pb-2">
+          My Projects
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoading ? (
+            <p className="text-gray-500 text-lg">Loading projects...</p>
+          ) : isError ? (
+            <p className="text-red-500 text-lg">
+              Error loading projects. Please try again.
+            </p>
+          ) : clientProjects.length > 0 ? (
+            clientProjects.map((project: Project) => (
+              <motion.div
+                key={project.projectId}
+                className="bg-gradient-to-br from-blue-50 to-white shadow-md rounded-xl p-6 border border-gray-200"
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+                style={{ minHeight: "250px" }}
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-md md:text-xl font-bold text-gray-800 bg-blue-100 px-3 py-1 rounded-full">
+                    {project.projectName}
+                  </h3>
+                  <span
+                    className={`text-sm font-semibold px-2 py-1 rounded-full ${
+                      project.projectStatus.toLowerCase() === "cancelled"
+                        ? "bg-red-100 text-red-600"
+                        : "bg-green-100 text-green-600"
+                    }`}
+                  >
+                    {project.projectStatus}
+                  </span>
+                </div>
+                <p className="text-gray-600 mb-4 line-clamp-3 text-sm leading-relaxed">
+                  {project.projectDescription}
                 </p>
-                <p className="text-gray-700 text-md">
-                  <span className="font-semibold text-blue-600">Value:</span> $
-                  {project.projectValue.toFixed(2)}
+                <div className="space-y-2 mb-6">
+                  <p className="text-gray-700 text-md">
+                    <span className="font-semibold ">ID:</span>{" "}
+                    {project.projectId}
+                  </p>
+                  <p className="text-gray-700 text-md">
+                    <span className="font-semibold ">Value:</span> $
+                    {project.projectValue.toFixed(2)}
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    <span className="font-semibold">Deadline:</span>{" "}
+                    {new Date(project.deadline).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="flex space-x-3 mt-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                    onClick={() => handleDetails(project)}
+                  >
+                    Details
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className={`bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white transition-all ${
+                      project.projectStatus.toLowerCase() === "cancelled"
+                        ? "bg-gray-300 text-black opacity-75 cursor-not-allowed"
+                        : ""
+                    }`}
+                    onClick={() => handlePay(project)}
+                    disabled={
+                      project.projectStatus.toLowerCase() === "cancelled"
+                    }
+                  >
+                    Pay
+                  </Button>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-lg">
+              No projects found for this client.
+            </p>
+          )}
+        </div>
+
+        {selectedProject && (
+          <Dialog open={true} onOpenChange={() => setSelectedProject(null)}>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-gray-800">
+                Project Details
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                View the details of the selected project.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogContent className="max-w-2xl">
+              <div className="p-6 space-y-4">
+                <p className="text-gray-700">
+                  <span className="font-semibold">Project ID:</span>{" "}
+                  {selectedProject.projectId}
                 </p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-700">
+                  <span className="font-semibold">Name:</span>{" "}
+                  {selectedProject.projectName}
+                </p>
+                <p className="text-gray-700 max-w-prose break-words">
+                  <span className="font-semibold block">Description:</span>{" "}
+                  {selectedProject.projectDescription}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Station:</span>{" "}
+                  {selectedProject.station}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Value:</span> $
+                  {selectedProject.projectValue.toFixed(2)}
+                </p>
+                <p className="text-gray-700">
                   <span className="font-semibold">Deadline:</span>{" "}
-                  {new Date(project.deadline).toLocaleDateString()}
+                  {new Date(selectedProject.deadline).toLocaleDateString()}
                 </p>
-              </div>
-              <div className="flex space-x-3 mt-auto">
+                <p className="text-gray-700">
+                  <span className="font-semibold">Estimated Delivery:</span>{" "}
+                  {selectedProject.estimatedDelivery}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Status:</span>{" "}
+                  {selectedProject.projectStatus}
+                </p>
+                {selectedProject.projectStatus.toLowerCase() ===
+                  "cancelled" && (
+                  <p className="text-gray-700 border border-red-700 rounded-xl p-3">
+                    <span className="font-semibold">Cancellation Note:</span>{" "}
+                    {selectedProject.station ||
+                      "No cancellation note available"}
+                  </p>
+                )}
+
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                  onClick={() => handleDetails(project)}
+                  className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50"
+                  onClick={() => setSelectedProject(null)}
                 >
-                  Details
-                </Button>
-                <Button
-                  variant="default"
-                  size="sm"
-                  className={`bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white transition-all ${
-                    project.projectStatus.toLowerCase() === "cancelled"
-                      ? "bg-gray-300 text-black opacity-75 cursor-not-allowed"
-                      : ""
-                  }`}
-                  onClick={() => handlePay(project)}
-                  disabled={project.projectStatus.toLowerCase() === "cancelled"}
-                >
-                  Pay
+                  Close
                 </Button>
               </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 text-lg">
-            No projects found for this client.
-          </p>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
-
-      {selectedProject && (
-        <Dialog open={true} onOpenChange={() => setSelectedProject(null)}>
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-gray-800">
-              Project Details
-            </DialogTitle>
-            <DialogDescription className="text-gray-600">
-              View the details of the selected project.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogContent className="max-w-2xl">
-            <div className="p-6 space-y-4">
-              <p className="text-gray-700">
-                <span className="font-semibold">Project ID:</span>{" "}
-                {selectedProject.projectId}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Name:</span>{" "}
-                {selectedProject.projectName}
-              </p>
-              <p className="text-gray-700 max-w-prose break-words">
-                <span className="font-semibold block">Description:</span>{" "}
-                {selectedProject.projectDescription}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Value:</span> $
-                {selectedProject.projectValue.toFixed(2)}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Deadline:</span>{" "}
-                {new Date(selectedProject.deadline).toLocaleDateString()}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Estimated Delivery:</span>{" "}
-                {selectedProject.estimatedDelivery}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Status:</span>{" "}
-                {selectedProject.projectStatus}
-              </p>
-              <Button
-                variant="outline"
-                className="mt-4 text-blue-600 border-blue-600 hover:bg-blue-50"
-                onClick={() => setSelectedProject(null)}
-              >
-                Close
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }

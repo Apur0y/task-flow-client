@@ -1,4 +1,5 @@
 "use client";
+
 import { useForm } from "react-hook-form";
 import { useCreateProjectMutation } from "@/feature/projectCreate/projectCreateSlice";
 import { Label } from "@/components/ui/label";
@@ -58,7 +59,7 @@ export default function ProjectListPage() {
 
   return (
     <div>
-      <h1 className="text-xl lg:text-3xl font-semibold ml-3 lg:ml-8 mt-5">
+      <h1 className="text-xl lg:text-3xl font-semibold ml-3 lg:ml-8 ">
         Project Create
       </h1>
       <div className="bg-white shadow-md px-6 mx-3 lg:mx-8 rounded-xl py-4 lg:py-6 mt-4">
@@ -68,7 +69,7 @@ export default function ProjectListPage() {
         >
           <Label htmlFor="projectName">Project Name</Label>
           <Input
-            className="mt-2 p-5 mb-4 lg:mb-6"
+            className="mt-2 p-5 mb-4 lg:mb-6 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
             type="text"
             id="projectName"
             placeholder="e.g., Perry Rodgers"
@@ -81,7 +82,7 @@ export default function ProjectListPage() {
           )}
           <Label htmlFor="projectId">Project ID</Label>
           <Input
-            className="mt-2 p-5 mb-4 lg:mb-6"
+            className="mt-2 p-5 mb-4 lg:mb-6 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
             type="text"
             id="projectId"
             placeholder="e.g., PRJ124"
@@ -94,7 +95,7 @@ export default function ProjectListPage() {
             <div className="w-full lg:w-1/2">
               <Label htmlFor="clientId">Client ID</Label>
               <Input
-                className="mt-2 p-5 mb-4 lg:mb-6"
+                className="mt-2 p-5 mb-4 lg:mb-6 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
                 type="text"
                 id="clientId"
                 placeholder="e.g., CLI124"
@@ -109,7 +110,7 @@ export default function ProjectListPage() {
             <div className="w-full lg:w-1/2">
               <Label htmlFor="station">Source Station</Label>
               <Input
-                className="mt-2 p-5 mb-4 lg:mb-6"
+                className="mt-2 p-5 mb-4 lg:mb-6 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
                 type="text"
                 id="station"
                 placeholder="e.g., Rem in odio deserunt"
@@ -126,7 +127,7 @@ export default function ProjectListPage() {
             <div className="w-full lg:w-1/2">
               <Label htmlFor="deadline">Project Deadline</Label>
               <Input
-                className="mt-2 p-5 mb-4 lg:mb-6"
+                className="mt-2 p-5 mb-4 lg:mb-6 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
                 type="datetime-local"
                 id="deadline"
                 {...register("deadline", { required: "Deadline is required" })}
@@ -140,7 +141,7 @@ export default function ProjectListPage() {
             <div className="w-full lg:w-1/2">
               <Label htmlFor="projectValue">Project Value</Label>
               <Input
-                className="mt-2 p-5 mb-4 lg:mb-6"
+                className="mt-2 p-5 mb-4 lg:mb-6 border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
                 type="number"
                 id="projectValue"
                 placeholder="e.g., 200000"
@@ -160,7 +161,7 @@ export default function ProjectListPage() {
           <div className="w-full">
             <Label htmlFor="projectDescription">Project Description</Label>
             <textarea
-              className="mt-2 p-5 h-28 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="mt-2 p-5 h-28 mb-4 lg:mb-6 w-full border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300"
               id="projectDescription"
               placeholder="e.g., Let me know if you want it spaced out (40-50 chars)"
               {...register("projectDescription", {
@@ -176,7 +177,7 @@ export default function ProjectListPage() {
           <div className="w-full">
             <Label htmlFor="projectStatus">Project Status</Label>
             <select
-              className="mt-2 p-5 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="mt-2 p-5 mb-4 lg:mb-6 w-full border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300 appearance-none"
               id="projectStatus"
               {...register("projectStatus", { required: "Status is required" })}
             >
@@ -197,7 +198,7 @@ export default function ProjectListPage() {
           <div className="w-full">
             <Label htmlFor="estimatedDelivery">Estimated Delivery</Label>
             <select
-              className="mt-2 p-5 mb-4 lg:mb-6 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="mt-2 p-5 mb-4 lg:mb-6 w-full border border-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 hover:shadow-lg hover:border-green-300 appearance-none"
               id="estimatedDelivery"
               {...register("estimatedDelivery", {
                 required: "Estimated Delivery is required",
@@ -215,14 +216,14 @@ export default function ProjectListPage() {
           </div>
           <div className="flex justify-end space-x-4 lg:space-x-8 w-full">
             <Button
-              className="px-4 lg:px-10 py-2 lg:py-5 bg-green-500 text-white hover:bg-green-600"
+              className="px-4 lg:px-10 py-2 lg:py-5 bg-green-500 text-white hover:bg-green-600 transition-all duration-300"
               type="submit"
               disabled={isLoading}
             >
               {isLoading ? "Adding..." : "Add Project"}
             </Button>
             <Button
-              className="px-4 lg:px-10 py-2 lg:py-5"
+              className="px-4 lg:px-10 py-2 lg:py-5 bg-red-500 text-white hover:bg-red-600 transition-all duration-300"
               variant="destructive"
               onClick={handleReset}
             >
