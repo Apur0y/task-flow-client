@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
-import { useGetProjectsCatchallQuery } from "@/feature/projectCreate/projectCreateSlice";
+import {
+  useCancelProjectMutation,
+  useGetProjectsCatchallQuery,
+  useUpdateProjectMutation,
+} from "@/feature/projectCreate/projectCreateSlice";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Edit, X, Eye } from "lucide-react"; // Shadcn/Lucide icons
@@ -74,7 +77,6 @@ type DetailData = {
 export default function ProjectCards() {
   const {
     data: projects,
-    refetch,
     isLoading,
     isError,
   } = useGetProjectsCatchallQuery("un");
@@ -97,87 +99,40 @@ export default function ProjectCards() {
   const { register, handleSubmit, reset, setValue, getValues } =
     useForm<FormData>();
 
+  const [updateProject] = useUpdateProjectMutation();
+
   const handleUpdate = async (data: FormData) => {
-    console.log("Before Update - Form Data:", getValues());
     const projectId = getValues("projectId");
-    console.log("Handling Update - Project ID:", projectId);
+    if (!projectId) return toast.error("Project ID missing");
 
-    const token = localStorage.getItem("accessToken");
-    console.log("Token Used:", token);
+    const updateData = { ...data };
+    delete updateData.cancellationNote;
 
-    if (projectId) {
-      try {
-        const updateData = { ...data };
-        delete updateData.cancellationNote;
-        const response = await axios.patch(
-          `https://taskflow-server-pi.vercel.app/api/project/${projectId}`,
-          updateData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Update Result:", response.data);
-        toast.success("Project updated successfully");
-        reset();
-        refetch();
-      } catch (err) {
-        if (
-          err &&
-          typeof err === "object" &&
-          "response" in err &&
-          err.response &&
-          typeof err.response === "object" &&
-          "data" in err.response
-        ) {
-          console.error("Update Error:", err.response.data);
-        } else if (err instanceof Error) {
-          console.error("Update Error:", err.message);
-        } else {
-          console.error("Update Error:", err);
-        }
-      }
-    } else {
-      console.error("Project ID is undefined, check form input");
+    try {
+      await updateProject({ projectId, data: updateData }).unwrap();
+      toast.success("Project updated successfully");
+      reset();
+    } catch (error) {
+      toast.error("Failed to update project");
+      console.error("Update error:", error);
     }
   };
 
+  const [cancelProject] = useCancelProjectMutation();
+
   const handleCancel = async (data: { cancellationNote: string }) => {
-    console.log(
-      "Cancel API Call URL:",
-      `/api/project/${cancelProjectId}/cancel`
-    );
-    if (cancelProjectId) {
-      try {
-        const response = await axios.patch(
-          `https://taskflow-server-pi.vercel.app/api/project/${cancelProjectId}/cancel`,
-          {
-            cancellationNote: data.cancellationNote,
-            projectStatus: "cancelled",
-          }
-        );
-        console.log("Cancel Result:", response.data);
-        toast.success("Project cancelled successfully");
-        setCancelProjectId(null);
-      } catch (err) {
-        if (
-          err &&
-          typeof err === "object" &&
-          "response" in err &&
-          err.response &&
-          typeof err.response === "object" &&
-          "data" in err.response
-        ) {
-          console.error("Cancel Error:", err.response.data);
-        } else if (err instanceof Error) {
-          console.error("Cancel Error:", err.message);
-        } else {
-          console.error("Cancel Error:", err);
-        }
-      }
-    } else {
-      console.error("Cancel Project ID is undefined");
+    if (!cancelProjectId) return toast.error("No project selected to cancel");
+
+    try {
+      await cancelProject({
+        projectId: cancelProjectId,
+        cancellationNote: data.cancellationNote,
+      }).unwrap();
+      toast.success("Project cancelled successfully");
+      setCancelProjectId(null);
+    } catch (error) {
+      toast.error("Failed to cancel project");
+      console.error("Cancel error:", error);
     }
   };
 

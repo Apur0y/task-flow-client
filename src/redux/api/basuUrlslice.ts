@@ -8,19 +8,16 @@ export const createBaseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-   prepareHeaders: (headers,) => {
-  const token = localStorage.getItem("accessToken") 
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
- 
-  } else {
-    console.warn("No token found in Redux for API call.");
-  }
-  return headers;
-},
-
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      } else {
+        console.warn("No token found in Redux for API call.");
+      }
+      return headers;
+    },
   }),
+  tagTypes: ["Projects"],
   endpoints: () => ({}),
 });
-
-
