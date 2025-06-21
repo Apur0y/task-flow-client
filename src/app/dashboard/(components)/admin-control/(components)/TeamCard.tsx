@@ -1,4 +1,4 @@
-import { DeleteIcon, Mail, Move, Phone } from 'lucide-react';
+import { DeleteIcon, Mail,  Phone } from 'lucide-react';
 
 import React, { useEffect, useState } from 'react';
 import { Team } from './TeamSection';
@@ -6,18 +6,23 @@ import { useDeleteTeamMutation, useGetAllTeamQuery, useMoveMemberMutation } from
 import toast from 'react-hot-toast';
 import { useGetProjectsCatchallQuery } from '@/feature/projectCreate/projectCreateSlice';
 import { Project } from '../../MyProjects';
+import Swal from 'sweetalert2';
 // import { useForm } from 'react-hook-form';
+
 
 export default function TeamCard({ team }: { team: Team }) {
     const [showPhone, setShowPhone] = useState(false);
     const [showEmail, setShowEmail] = useState(false);
     const [deleteTeam] = useDeleteTeamMutation();
     const [newTeam, setNewTeam] = useState("");
-    const [moveMember, setMoveMember] = useState("ol")
-    const { data: allteams } = useGetAllTeamQuery({})
+    const [moveMember, setMoveMember] = useState<string | null>(null);
+    // const [member, setMember] = useState<string[]>([moveMember || ""]);
+
+    const { data: allteams, refetch } = useGetAllTeamQuery({})
     const [moveUser] = useMoveMemberMutation();
     const { data: allProjects } = useGetProjectsCatchallQuery({});
-    const [getProjects, setProjects] = useState<Project[]>([])
+    const [getProjects, setProjects] = useState<Project[]>([]);
+    const [moveView, setMoveView] = useState(false)
 
 
 
@@ -27,23 +32,43 @@ export default function TeamCard({ team }: { team: Team }) {
     );
 
     const handleTeamDelete = async (id: string) => {
-        try {
-            const response = await deleteTeam(id).unwrap();
-            // Optionally, show a success message or update UI
-            console.log('Team deleted successfully:', response);
-        } catch (error) {
-            // Handle error (e.g., show error notification)
-            if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
 
-                console.error('Failed to delete team:', error.data.message);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await deleteTeam(id).unwrap();
+                    toast.success(response.data.message || 'Team deleted successfully');
+                    refetch(); 
+                    console.log('Team deleted successfully:', response);
+                } catch (error) {
+                    if (error && typeof error === 'object' && 'data' in error && error.data && typeof error.data === 'object' && 'message' in error.data) {
 
-                toast.error(String(error.data.message || 'Failed to delete team'));
-            } else {
-                console.error('Failed to delete team:', error);
-                toast.error('Failed to delete team');
+                        console.error('Failed to delete team:', error.data.message);
+
+                        toast.error(String(error.data.message || 'Failed to delete team'));
+                    } else {
+                        console.error('Failed to delete team:', error);
+                        toast.error('Failed to delete team');
+                    }
+                }
             }
-        }
+        });
+
     }
+    //     useEffect(() => {
+    //     if (moveMember) {
+    //         const modal = document.getElementById('my_modal_3') as HTMLDialogElement || null ; modal?.showModal?.();
+    //     }
+    // }, [moveMember]);
+
 
     useEffect(() => {
         if (allProjects?.data) {
@@ -71,42 +96,44 @@ export default function TeamCard({ team }: { team: Team }) {
     };
 
     const { completed, running, totalEarnings } = getTeamStats(getProjects, teamName);
-   
 
-    const handleMoveMember = (member: string) => {
-     console.log(member)
-        setMoveMember(member);
-     console.log(moveMember)
-    const modal = document.getElementById('my_modal_3') as HTMLDialogElement | null;
-//  console.log(moveMember,"Underr")
-      if (modal) {
 
-        //  console.log(moveMember,"In the modak")
-      modal.showModal();
+    const handleMoveMember = (member2: string) => {
+        setMoveView(!moveView);
+        // setMember(member2);
+        setMoveMember(member2);
+
+        console.log(member2)
 
     }
-    
-    }
-
-//     useEffect(() => {
-//   if (moveMember) {
-//     const modal = document.getElementById('my_modal_2') as HTMLDialogElement;
-//     if (modal) modal.showModal();
-//   }
-// }, [moveMember]);
 
 
 
     const handleMove = async () => {
+        console.log(moveMember, newTeam)
         try {
-            const response = await moveUser({ memberEmail: moveMember, toTeamName:newTeam }).unwrap();
+            const response = await moveUser({ memberEmail: moveMember, toTeamName: newTeam }).unwrap();
             console.log(newTeam, "My team", moveMember);
-            if (response) {
+            if (response.success === true) {
+                toast.success(response.data.message || 'Member moved successfully');
+                setMoveView(false);
                 console.log(response)
+                refetch();
             }
         } catch (error) {
-            console.error('Failed to move member:', error);
-            toast.error('Failed to move member');
+            // console.error('Failed to move member:', error);
+            if (
+                error &&
+                typeof error === 'object' &&
+                'data' in error &&
+                error.data &&
+                typeof error.data === 'object' &&
+                'message' in error.data
+            ) {
+                toast.error(String((error as any).data.message || 'Failed to move member'));
+            } else {
+                toast.error('Failed to move member');
+            }
         }
     }
 
@@ -131,7 +158,7 @@ export default function TeamCard({ team }: { team: Team }) {
                     <DeleteIcon />
                 </button>
             </div>
-        
+
 
             {/* Stats Section */}
             <div className="grid grid-cols-2 md:grid-cols-3 divide-x border-b text-center text-sm bg-gray-50">
@@ -164,11 +191,48 @@ export default function TeamCard({ team }: { team: Team }) {
                         <div className="flex justify-between p-3 hover:bg-gray-50" key={idx}>
                             <span>{member}</span>
                             <span className="text-gray-500">Member</span>
-                            <button onClick={() => handleMoveMember(member)}>Move <Move></Move></button>
+                            <button className='py-1 rounded-sm shadow-lg font-semibold px-4 bg-gray-400 border-none' onClick={() => handleMoveMember(member)}>Move </button>
+
                         </div>
                     ))}
                 </div>
+
+
+                {/* Move member view */}
+
+                <div className={`p-4 ${moveView ? 'block' : 'hidden'}`}>
+                    <div className="mb-6">
+                        <p className="text-sm text-gray-500 mb-2">Move Member:</p>
+                        <div className="grid gap-2 max-h-40 overflow-auto">
+                            {moveMember}
+                         
+                        </div>
+
+
+                    </div>
+                    <div className="mb-6">
+                        <p className="text-sm text-gray-500 mb-2">Move to team:</p>
+                        <div className="grid gap-2 max-h-40 overflow-auto">
+                            {allteams?.data.map((team: Team) => (
+                                <button
+                                    key={team.teamID}
+                                    onClick={() => setNewTeam(team.teamName)}
+                                    className={`px-4 py-2 rounded-md border text-left hover:bg-gray-100 ${newTeam === team.teamName ? 'bg-gray-200 font-semibold' : ''
+                                        }`}
+                                >
+                                    {team.teamName}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <button onClick={() => handleMove()} className='btn'>Move</button>
+                </div>
+
             </div>
+
+
+
+
 
             {/* Contact Info */}
             <div className="flex flex-wrap justify-center gap-6 border-t py-4 px-4 text-sm">
@@ -187,61 +251,6 @@ export default function TeamCard({ team }: { team: Team }) {
                     <span>taskflow@mail.com</span>
                 </div>
             </div>
-                <p>{moveMember}</p>
-
-            {/* Open the modal using document.getElementById('ID').showModal() method */}
-            {/* <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>open modal</button> */}
-        
-        
-            <dialog id="my_modal_3" className="modal">
-                <div className="modal-box bg-white rounded-md shadow-lg max-w-md w-full">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4">Move Team Member</h3>
-
-                    {/* Member to move */}
-                    <div className="mb-4">
-                        <p className="text-sm text-gray-500 mb-1">Member to move:</p>
-                        <div className="px-3 py-2 border rounded-md bg-gray-50 text-gray-700">
-                            {moveMember}
-                        </div>
-                    </div>
-
-                    {/* Select new team */}
-                    <div className="mb-6">
-                        <p className="text-sm text-gray-500 mb-2">Move to team:</p>
-                        <div className="grid gap-2 max-h-40 overflow-auto">
-                            {allteams?.data.map((team: Team) => (
-                                <button
-                                    key={team.teamID}
-                                    onClick={() => setNewTeam(team.teamName)}
-                                    className={`px-4 py-2 rounded-md border text-left hover:bg-gray-100 ${newTeam === team.teamName ? 'bg-gray-200 font-semibold' : ''
-                                        }`}
-                                >
-                                    {team.teamName}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex justify-end gap-2">
-                        <form method="dialog">
-                            <button className="btn border-none bg-gray-400">Cancel</button>
-                        </form>
-                        <button
-                            type='button'
-                            onClick={handleMove}
-                            className="btn hover:bg-task-primary border-none"
-                        >
-                            Move
-                        </button>
-                    </div>
-                </div>
-
-                {/* Modal backdrop */}
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
-            </dialog>
 
 
 
@@ -253,59 +262,3 @@ export default function TeamCard({ team }: { team: Team }) {
 }
 
 
-
-//   <dialog id="my_modal_2" className="modal">
-//       <div className="modal-box bg-white">
-//         <h3 className="font-bold text-lg mb-4">Update Team</h3>
-
-//         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-//   <div>
-//     <label className="block text-sm font-medium">Team Name</label>
-//     <input
-//       {...register('teamName', { required: 'Team name is required' })}
-//       className="input input-bordered bg-white shadow-lg w-full"
-//       placeholder="Enter team name"
-//     />
-//     {errors.teamName && <p className="text-red-500 text-sm">{errors.teamName.message}</p>}
-//   </div>
-
-//           <div>
-//             <label className="block text-sm font-medium">Team Leader Email</label>
-//             <input
-//               {...register('teamLeaderEmail', { required: 'Leader email is required' })}
-//               className="input input-bordered bg-white shadow-lg w-full"
-//               placeholder="Enter leader email"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="block text-sm font-medium">Team Co-leader Email</label>
-//             <input
-//               {...register('teamColeaderEmail')}
-//               className="input input-bordered bg-white shadow-lg w-full"
-//               placeholder="Enter co-leader email"
-//             />
-//           </div>
-
-//           <div>
-//             <label className="block text-sm font-medium">Team Members (comma-separated emails)</label>
-//             <input
-//               {...register('teamMembersEmails')}
-//               className="input input-bordered bg-white shadow-lg w-full"
-//               placeholder="e.g. user1@example.com,user2@example.com"
-//               defaultValue={team.teamMembersEmails.join(',')}
-//             />
-//           </div>
-
-//           <div className="flex justify-end">
-//             <button type="submit" className="btn btn-primary">
-//               Update
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-
-//       <form method="dialog" className="modal-backdrop">
-//         <button>close</button>
-//       </form>
-//     </dialog>

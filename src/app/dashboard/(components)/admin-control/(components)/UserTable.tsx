@@ -7,6 +7,7 @@ import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import {  FaTrash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 
 interface User {
@@ -40,7 +41,7 @@ const UserTable: FC = () => {
   ]);
 
 
-  const { data } = useGetAllUserQuery({});
+  const { data ,refetch} = useGetAllUserQuery({});
   const [createUser] = useCreateUserMutation()
   const [deleteUser] = useDeleteUserMutation()
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -75,7 +76,7 @@ const UserTable: FC = () => {
       setUsers(users);
       toast.success("User Creation Successfull");
       reset();
-
+       refetch();
 
       (document.getElementById('my_modal_2') as HTMLDialogElement)?.close();
     } else {
@@ -89,11 +90,27 @@ const UserTable: FC = () => {
 
   const handleUserDelete = async (id: string) => {
 
-    const responce = await deleteUser(id);
+    Swal.fire({
+  title: "Are you sure?",
+  text: "You won't be able to revert this!",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: " #009999",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes, delete User!"
+}).then(async(result) => {
+  if (result.isConfirmed) {
+       const responce = await deleteUser(id);
     if ('data' in responce && responce.data) {
-
+      refetch()
       toast.success("User deleted")
     }
+
+    
+  }
+});
+
+ 
   }
 
   const handleSearch = (searchInput: string) => {
@@ -109,7 +126,7 @@ const UserTable: FC = () => {
 
   useEffect(() => {
     if (data?.data) {
-      console.log(data.data)
+     
       setUsers(data?.data)
       setFilteredUsers(data?.data)
     }

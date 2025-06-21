@@ -47,6 +47,8 @@ export default function Page({ params }: PageProps) {
     ? <div><ProjectInfo /></div>
     : route === "Teams" && role === "admin"
     ? <div><TeamInfo /></div>
+           : route === "profile" && role === "admin"
+    ?<div><UserProfile /></div>
     : null;
 
 
@@ -58,6 +60,8 @@ export default function Page({ params }: PageProps) {
     ?<div><MyProjects /></div>
     : route === "Team Chat" && role === "teamLeader"
     ?<div><Chat /></div>
+       : route === "profile" && role === "teamLeader"
+    ?<div><UserProfile /></div>
     : null;
 
 
@@ -67,6 +71,8 @@ export default function Page({ params }: PageProps) {
     ?<div><MyProjects /></div>
      : route === "Team Chat" && role === "teamColeader"
     ?<div><Chat /></div>
+    : route === "profile" && role === "teamColeader"
+    ?<div><UserProfile /></div>
     : null;
 
 
@@ -86,7 +92,6 @@ export default function Page({ params }: PageProps) {
 
   return (
     <div>
-      {/* <Chat></Chat> */}
       
       {adminRoutes || leaderRoutes || coleaderRoutes || memberRoutes }
     </div>
