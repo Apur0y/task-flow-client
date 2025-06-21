@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { selectAuth } from "@/feature/auth/authSelectors";
-import { useRouter, usePathname } from "next/navigation";
-import { set } from "zod";
+import {  usePathname } from "next/navigation";
+
 
 export function NavMain({}: {
   items: {

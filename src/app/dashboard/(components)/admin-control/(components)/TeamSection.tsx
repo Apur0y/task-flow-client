@@ -72,6 +72,7 @@ const unassignedPeople = useMemo(() => {
       setTeams(allteams.data);
    
     }
+    console.log(filteredMembers)
   }, [people?.data, allteams?.data]);
 
 
